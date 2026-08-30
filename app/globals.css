@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-space: #07080a;
+  --bg-dial-card: #0d0f14;
+  --bg-dial-inner: #13171f;
+  --gold-accent: #cf9f2d;
+  --gold-glow: rgba(207, 159, 45, 0.25);
+  --steel-accent: #8b99ac;
+  --ruby-accent: #e63946;
+  --ease-horology: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+  background-color: var(--bg-space);
+  color: #e5e9f0;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(207, 159, 45, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 100% 50%, rgba(56, 189, 248, 0.03) 0%, transparent 40%),
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+}
+
+/* Côtes de Genève (Geneva Stripes) pattern */
+.cotes-de-geneve {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.015),
+    rgba(255, 255, 255, 0.015) 4px,
+    rgba(0, 0, 0, 0.15) 4px,
+    rgba(0, 0, 0, 0.15) 8px
+  );
+}
+
+/* Fluted Bezel metallic ring styling */
+.fluted-bezel {
+  background: conic-gradient(
+    from 0deg,
+    #2a303c 0deg,
+    #4f5b6e 15deg,
+    #2a303c 30deg,
+    #4f5b6e 45deg,
+    #2a303c 60deg,
+    #4f5b6e 75deg,
+    #2a303c 90deg,
+    #4f5b6e 105deg,
+    #2a303c 120deg,
+    #4f5b6e 135deg,
+    #2a303c 150deg,
+    #4f5b6e 165deg,
+    #2a303c 180deg,
+    #4f5b6e 195deg,
+    #2a303c 210deg,
+    #4f5b6e 225deg,
+    #2a303c 240deg,
+    #4f5b6e 255deg,
+    #2a303c 270deg,
+    #4f5b6e 285deg,
+    #2a303c 300deg,
+    #4f5b6e 315deg,
+    #2a303c 330deg,
+    #4f5b6e 345deg,
+    #2a303c 360deg
+  );
+}
+
+.fluted-bezel-gold {
+  background: conic-gradient(
+    from 0deg,
+    #7a5814 0deg,
+    #dfb851 15deg,
+    #7a5814 30deg,
+    #dfb851 45deg,
+    #7a5814 60deg,
+    #dfb851 75deg,
+    #7a5814 90deg,
+    #dfb851 105deg,
+    #7a5814 120deg,
+    #dfb851 135deg,
+    #7a5814 150deg,
+    #dfb851 165deg,
+    #7a5814 180deg,
+    #dfb851 195deg,
+    #7a5814 210deg,
+    #dfb851 225deg,
+    #7a5814 240deg,
+    #dfb851 255deg,
+    #7a5814 270deg,
+    #dfb851 285deg,
+    #7a5814 300deg,
+    #dfb851 315deg,
+    #7a5814 330deg,
+    #dfb851 345deg,
+    #7a5814 360deg
+  );
+}
+
+/* Sunburst Dial Finish */
+.sunburst-dial {
+  background: radial-gradient(circle at center, rgba(207, 159, 45, 0.15) 0%, rgba(13, 15, 20, 0.95) 75%),
+              conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.06) 60deg, transparent 120deg, rgba(255,255,255,0.06) 240deg, transparent 360deg);
+}
+
+/* Engraved Text Effect */
+.text-engraved {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.9), 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #f8ecc5 0%, #dfb851 40%, #b58220 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-steel-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #b8c3d1 50%, #6e7e93 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Gold hairline borders */
+.border-gold-hairline {
+  border: 1px solid rgba(207, 159, 45, 0.22);
+}
+
+.border-steel-hairline {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* Custom Watch Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090a0d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #252b38;
+  border-radius: 3px;
+  border: 1px solid rgba(207, 159, 45, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cf9f2d;
+}
+
+/* Custom 3D Caseback Flip */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}

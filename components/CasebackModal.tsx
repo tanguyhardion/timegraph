@@ -388,8 +388,8 @@ export function CasebackModal({
                           <span className="text-white font-semibold">
                             {formatCurrency(entry.price, entry.currency)}
                           </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] bg-dial-800 text-steel-300 capitalize">
-                            {entry.availability.replace('_', ' ')}
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-dial-800 text-steel-300">
+                            {AVAILABILITY_CONFIG[entry.availability]?.label || entry.availability.replace(/_/g, ' ')}
                           </span>
                           {entry.note && (
                             <span className="text-gold-300 text-[11px]">· {entry.note}</span>

@@ -213,7 +213,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
                     {formatCurrency(scrapedData.price || price, currency)}
                   </span>
                   <span>·</span>
-                  <span className="capitalize">{scrapedData.availability || 'In Stock'}</span>
+                  <span>{AVAILABILITY_CONFIG[scrapedData.availability || 'in_stock']?.label || (scrapedData.availability ? scrapedData.availability.replace(/_/g, ' ') : 'In Stock')}</span>
                 </div>
               </div>
             </div>

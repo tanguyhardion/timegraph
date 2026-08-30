@@ -225,11 +225,11 @@ export async function updateWatch(id: string, updates: Partial<Watch>): Promise<
       ? Number(updates.originalPrice)
       : (current.originalPrice ?? currentPrice);
   const lowestRecordedPrice =
-    current.lowestRecordedPrice !== undefined
+    current.lowestRecordedPrice != null
       ? Math.min(current.lowestRecordedPrice, currentPrice)
       : currentPrice;
   const highestRecordedPrice =
-    current.highestRecordedPrice !== undefined
+    current.highestRecordedPrice != null
       ? Math.max(current.highestRecordedPrice, currentPrice, originalPrice)
       : Math.max(currentPrice, originalPrice);
 

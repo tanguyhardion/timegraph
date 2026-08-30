@@ -4,7 +4,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'TIMEGRAPH — Horological Watch Wishlist & Autonomous Price Tracker',
   description:
-    'A personal luxury mechanical watch movement wishlist. Paste a link to auto-scrape specs, track real-time price drops & restocks via ScrapingAnt and Vercel Cron.',
+    'A personal luxury mechanical watch movement wishlist. Paste a link to auto-scrape specs, track real-time price drops & restocks.',
 };
 
 export default function RootLayout({

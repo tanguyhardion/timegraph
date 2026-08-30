@@ -11,21 +11,10 @@ interface FilterBarProps {
   filters: FilterOptions;
   onFiltersChange: (newFilters: FilterOptions) => void;
   availableBrands: string[];
+  availableOccasions: string[];
   wishlistCount: number;
   acquiredCount: number;
 }
-
-const OCCASIONS: (WatchOccasion | 'All')[] = [
-  'All',
-  'Grail Goal',
-  'Birthday',
-  'Anniversary',
-  'Milestone',
-  'Promotion',
-  'Graduation',
-  'Wedding',
-  'Just Because',
-];
 
 export function FilterBar({
   currentTab,
@@ -33,6 +22,7 @@ export function FilterBar({
   filters,
   onFiltersChange,
   availableBrands,
+  availableOccasions,
   wishlistCount,
   acquiredCount,
 }: FilterBarProps) {
@@ -133,9 +123,8 @@ export function FilterBar({
         <span className="text-steel-500 text-[11px] uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
           Occasion:
         </span>
-        {OCCASIONS.map((occ) => {
+        {['All', ...availableOccasions].map((occ) => {
           const isSelected = (filters.occasion || 'All') === occ;
-          const style = occ !== 'All' ? OCCASION_COLORS[occ] : null;
 
           return (
             <button

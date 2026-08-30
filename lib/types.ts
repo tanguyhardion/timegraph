@@ -2,17 +2,7 @@ export type WatchAvailability = 'in_stock' | 'out_of_stock' | 'pre_order' | 'wai
 
 export type WatchStatus = 'wishlist' | 'acquired';
 
-export type WatchOccasion =
-  | 'Birthday'
-  | 'Anniversary'
-  | 'Milestone'
-  | 'Promotion'
-  | 'Graduation'
-  | 'Wedding'
-  | 'New Child'
-  | 'Retirement'
-  | 'Grail Goal'
-  | 'Just Because';
+export type WatchOccasion = string;
 
 export interface WatchSpecs {
   caseDiameter?: string;      // e.g. "40mm"

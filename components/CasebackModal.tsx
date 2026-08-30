@@ -2,12 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Watch, WatchOccasion, WatchAvailability, WatchStatus } from '@/lib/types';
-import { formatCurrency, formatDate, getRelativeTime, OCCASION_COLORS, AVAILABILITY_CONFIG, horologyAudio } from '@/lib/utils';
+import { formatCurrency, formatDate, getRelativeTime, getOccasionStyle, AVAILABILITY_CONFIG } from '@/lib/utils';
 import { SparklineChart } from './SparklineChart';
 import {
   X,
   ExternalLink,
-  RefreshCw,
   CheckCircle,
   Archive,
   Trash2,
@@ -28,21 +27,7 @@ interface CasebackModalProps {
   onClose: () => void;
   onUpdate: (updatedWatch: Partial<Watch> & { id: string }) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
-  onSync: (watch: Watch) => Promise<void>;
 }
-
-const OCCASIONS: WatchOccasion[] = [
-  'Grail Goal',
-  'Birthday',
-  'Anniversary',
-  'Milestone',
-  'Promotion',
-  'Graduation',
-  'Wedding',
-  'New Child',
-  'Retirement',
-  'Just Because',
-];
 
 const AVAILABILITIES: { value: WatchAvailability; label: string }[] = [
   { value: 'in_stock', label: 'In Stock' },
@@ -58,11 +43,9 @@ export function CasebackModal({
   onClose,
   onUpdate,
   onDelete,
-  onSync,
 }: CasebackModalProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
   const [activeTab, setActiveTab] = useState<'specs' | 'history' | 'edit'>('specs');
 
   // Form state for edits
@@ -77,7 +60,7 @@ export function CasebackModal({
         referenceNumber: watch.referenceNumber,
         currentPrice: watch.currentPrice,
         originalPrice: watch.originalPrice,
-        currency: watch.currency,
+        currency: watch.currency || 'EUR',
         occasion: watch.occasion,
         availability: watch.availability,
         status: watch.status,
@@ -96,7 +79,6 @@ export function CasebackModal({
   const handleSave = async () => {
     if (!watch) return;
     setIsSaving(true);
-    horologyAudio.playCrownWinding();
     try {
       await onUpdate({
         id: watch.id,
@@ -113,7 +95,6 @@ export function CasebackModal({
     if (!watch) return;
     const newStatus: WatchStatus = watch.status === 'acquired' ? 'wishlist' : 'acquired';
     const newDate = newStatus === 'acquired' ? new Date().toISOString().split('T')[0] : undefined;
-    horologyAudio.playCrownWinding();
     await onUpdate({
       id: watch.id,
       status: newStatus,
@@ -121,19 +102,8 @@ export function CasebackModal({
     });
   };
 
-  const handleSync = async () => {
-    if (!watch) return;
-    setIsSyncing(true);
-    horologyAudio.playCrownWinding();
-    try {
-      await onSync(watch);
-    } finally {
-      setIsSyncing(false);
-    }
-  };
-
   const isAcquired = watch.status === 'acquired';
-  const occasionStyle = OCCASION_COLORS[watch.occasion] || OCCASION_COLORS['Just Because'];
+  const occasionStyle = getOccasionStyle(watch.occasion);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
@@ -216,7 +186,7 @@ export function CasebackModal({
               }`}
             >
               <Edit3 className="w-3.5 h-3.5" />
-              Manual Override / Edit
+              Edit
             </button>
           </div>
 
@@ -298,8 +268,8 @@ export function CasebackModal({
 
                     <div className="border-l border-white/10 pl-4">
                       <span className="text-[10px] font-mono text-steel-400 uppercase block">STOCK AVAILABILITY</span>
-                      <span className="font-mono text-sm font-medium text-white capitalize">
-                        {watch.availability.replace('_', ' ')}
+                      <span className="font-mono text-sm font-medium text-white">
+                        {AVAILABILITIES.find((a) => a.value === watch.availability)?.label || watch.availability.replace(/_/g, ' ')}
                       </span>
                     </div>
                   </div>
@@ -312,36 +282,20 @@ export function CasebackModal({
                     </div>
                   )}
 
-                  {/* External Retailer Sync Bar */}
-                  <div className="flex items-center justify-between text-xs font-mono text-steel-400 pt-2">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-steel-500" />
-                      Last scraped {getRelativeTime(watch.lastScrapedAt)} via ScrapingAnt
-                    </span>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={handleSync}
-                        disabled={isSyncing}
-                        className="px-3 py-1 rounded bg-dial-800 hover:bg-dial-700 text-white flex items-center gap-1.5 border border-white/10"
+                  {/* External Retailer Link */}
+                  {watch.url && (
+                    <div className="flex items-center justify-end text-xs font-mono text-steel-400 pt-2">
+                      <a
+                        href={watch.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 rounded bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 flex items-center gap-1.5 border border-gold-500/40"
                       >
-                        <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin text-gold-400' : ''}`} />
-                        {isSyncing ? 'Re-scraping...' : 'Re-scrape URL'}
-                      </button>
-
-                      {watch.url && (
-                        <a
-                          href={watch.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-3 py-1 rounded bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 flex items-center gap-1.5 border border-gold-500/40"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          View Listing
-                        </a>
-                      )}
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        View Listing
+                      </a>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
@@ -497,21 +451,17 @@ export function CasebackModal({
 
                 <div>
                   <label className="text-steel-400 block mb-1">PURCHASE OCCASION</label>
-                  <select
-                    value={formData.occasion || 'Just Because'}
-                    onChange={(e) => setFormData({ ...formData, occasion: e.target.value as WatchOccasion })}
+                  <input
+                    type="text"
+                    placeholder="e.g. Grail Goal, Birthday, Milestone"
+                    value={formData.occasion || ''}
+                    onChange={(e) => setFormData({ ...formData, occasion: e.target.value })}
                     className="w-full px-3 py-2 rounded-lg bg-dial-900 border border-white/10 text-white focus:border-gold-400 focus:outline-none"
-                  >
-                    {OCCASIONS.map((occ) => (
-                      <option key={occ} value={occ}>
-                        {occ}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
 
                 <div>
-                  <label className="text-steel-400 block mb-1">PRICE (USD)</label>
+                  <label className="text-steel-400 block mb-1">PRICE (€)</label>
                   <input
                     type="number"
                     value={formData.currentPrice || 0}
@@ -618,7 +568,7 @@ export function CasebackModal({
                     className="px-5 py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-black font-semibold text-xs font-mono flex items-center gap-1.5 shadow-gold disabled:opacity-50"
                   >
                     <Save className="w-3.5 h-3.5" />
-                    {isSaving ? 'Saving Changes...' : 'Save Overrides'}
+                    {isSaving ? 'Saving Changes...' : 'Save Changes'}
                   </button>
                 </div>
               </div>

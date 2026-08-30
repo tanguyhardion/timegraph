@@ -6,15 +6,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(amount: number, currency: string = 'USD'): string {
+export function formatCurrency(amount: number, currency: string = 'EUR'): string {
   try {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IE', {
       style: 'currency',
-      currency: currency || 'USD',
+      currency: currency || 'EUR',
       maximumFractionDigits: 0,
     }).format(amount);
   } catch {
-    return `$${amount.toLocaleString()}`;
+    return `€${amount.toLocaleString()}`;
   }
 }
 
@@ -52,7 +52,7 @@ export function getRelativeTime(isoString?: string): string {
   }
 }
 
-export const OCCASION_COLORS: Record<WatchOccasion, { bg: string; text: string; border: string; glow: string }> = {
+export const OCCASION_COLORS: Record<string, { bg: string; text: string; border: string; glow: string }> = {
   Birthday: {
     bg: 'bg-amber-500/10',
     text: 'text-amber-300',
@@ -115,6 +115,17 @@ export const OCCASION_COLORS: Record<WatchOccasion, { bg: string; text: string; 
   },
 };
 
+export function getOccasionStyle(occasion?: string) {
+  if (!occasion) return OCCASION_COLORS['Just Because'];
+  if (OCCASION_COLORS[occasion]) return OCCASION_COLORS[occasion];
+  return {
+    bg: 'bg-gold-500/10',
+    text: 'text-gold-300',
+    border: 'border-gold-500/30',
+    glow: 'rgba(207, 159, 45, 0.2)',
+  };
+}
+
 export const AVAILABILITY_CONFIG: Record<
   WatchAvailability,
   { label: string; bg: string; text: string; dot: string }
@@ -150,84 +161,3 @@ export const AVAILABILITY_CONFIG: Record<
     dot: 'bg-zinc-500',
   },
 };
-
-/**
- * Web Audio API synthesized mechanical sound generator
- */
-class HorologyAudio {
-  private ctx: AudioContext | null = null;
-  public enabled: boolean = false;
-
-  private initCtx() {
-    if (!this.ctx && typeof window !== 'undefined') {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (AudioContextClass) {
-        this.ctx = new AudioContextClass();
-      }
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-  }
-
-  playTick(type: 'tic' | 'tac' = 'tic') {
-    if (!this.enabled) return;
-    try {
-      this.initCtx();
-      if (!this.ctx) return;
-
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      const filter = this.ctx.createBiquadFilter();
-
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(type === 'tic' ? 3200 : 2800, this.ctx.currentTime);
-      filter.Q.setValueAtTime(8, this.ctx.currentTime);
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(type === 'tic' ? 1800 : 1500, this.ctx.currentTime);
-
-      gain.gain.setValueAtTime(0.018, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.025);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.03);
-    } catch {
-      // Ignore audio synthesis errors on autoplay policies
-    }
-  }
-
-  playCrownWinding() {
-    try {
-      this.initCtx();
-      if (!this.ctx) return;
-
-      const now = this.ctx.currentTime;
-      for (let i = 0; i < 4; i++) {
-        const clickTime = now + i * 0.045;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(2200 + i * 150, clickTime);
-
-        gain.gain.setValueAtTime(0.02, clickTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, clickTime + 0.02);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-
-        osc.start(clickTime);
-        osc.stop(clickTime + 0.025);
-      }
-    } catch {
-      // Ignore audio synthesis errors
-    }
-  }
-}
-
-export const horologyAudio = new HorologyAudio();

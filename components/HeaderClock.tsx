@@ -1,8 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
-import { Volume2, VolumeX, Sparkles } from 'lucide-react';
-import { horologyAudio } from '@/lib/utils';
+import React, { useEffect, useState } from 'react';
 
 export function HeaderClock() {
   const [time, setTime] = useState<{ hours: number; minutes: number; seconds: number; date: number; ms: number }>({
@@ -12,8 +10,6 @@ export function HeaderClock() {
     date: 1,
     ms: 0,
   });
-  const [audioEnabled, setAudioEnabled] = useState(false);
-  const lastSecondRef = useRef<number>(-1);
 
   useEffect(() => {
     let animFrameId: number;
@@ -27,31 +23,12 @@ export function HeaderClock() {
       const date = now.getDate();
 
       setTime({ hours, minutes, seconds, date, ms });
-
-      // Mechanical 8-beat tick trigger
-      const currentTickStep = Math.floor(ms / 125);
-      if (currentTickStep !== lastSecondRef.current) {
-        lastSecondRef.current = currentTickStep;
-        if (horologyAudio.enabled) {
-          horologyAudio.playTick(currentTickStep % 2 === 0 ? 'tic' : 'tac');
-        }
-      }
-
       animFrameId = requestAnimationFrame(updateClock);
     };
 
     animFrameId = requestAnimationFrame(updateClock);
     return () => cancelAnimationFrame(animFrameId);
   }, []);
-
-  const toggleAudio = () => {
-    const next = !audioEnabled;
-    setAudioEnabled(next);
-    horologyAudio.enabled = next;
-    if (next) {
-      horologyAudio.playCrownWinding();
-    }
-  };
 
   // Mechanical smooth second hand calculation (continuous sweeping with subtle 8Hz mechanical pulse)
   const totalSeconds = time.seconds + time.ms / 1000;
@@ -134,19 +111,6 @@ export function HeaderClock() {
           </span>
         </div>
       </div>
-
-      {/* Audio Tick Toggle */}
-      <button
-        onClick={toggleAudio}
-        title={audioEnabled ? 'Mute mechanical escapement tick' : 'Enable mechanical ticking audio'}
-        className={`p-1.5 rounded-full transition-all duration-200 border ${
-          audioEnabled
-            ? 'bg-gold-500/20 border-gold-500/50 text-gold-300 shadow-gold'
-            : 'bg-dial-800 border-white/10 text-steel-400 hover:text-white'
-        }`}
-      >
-        {audioEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
-      </button>
     </div>
   );
 }

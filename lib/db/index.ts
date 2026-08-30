@@ -180,7 +180,7 @@ export async function createWatch(input: Partial<Watch>): Promise<Watch> {
     referenceNumber: input.referenceNumber || '',
     currentPrice,
     originalPrice,
-    currency: input.currency || 'USD',
+    currency: input.currency || 'EUR',
     lowestRecordedPrice: currentPrice,
     highestRecordedPrice: Math.max(currentPrice, originalPrice),
     priceDropPercentage:

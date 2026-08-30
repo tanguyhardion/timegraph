@@ -3,34 +3,21 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Watch } from '@/lib/types';
-import { formatCurrency, formatDate, getRelativeTime, OCCASION_COLORS, AVAILABILITY_CONFIG, horologyAudio } from '@/lib/utils';
+import { formatCurrency, formatDate, getRelativeTime, getOccasionStyle, AVAILABILITY_CONFIG } from '@/lib/utils';
 import { SparklineChart } from './SparklineChart';
-import { RefreshCw, ExternalLink, CheckCircle2, ShieldAlert, Sparkles, Compass, Eye } from 'lucide-react';
+import { ExternalLink, CheckCircle2, ShieldAlert, Sparkles, Compass, Eye } from 'lucide-react';
 
 interface WatchCardProps {
   watch: Watch;
   onOpenDetail: (watch: Watch) => void;
   onMarkAcquired: (watch: Watch) => void;
-  onSync: (watch: Watch) => Promise<void>;
 }
 
-export function WatchCard({ watch, onOpenDetail, onMarkAcquired, onSync }: WatchCardProps) {
-  const [isSyncing, setIsSyncing] = useState(false);
+export function WatchCard({ watch, onOpenDetail, onMarkAcquired }: WatchCardProps) {
   const [imgError, setImgError] = useState(false);
 
-  const occasionStyle = OCCASION_COLORS[watch.occasion] || OCCASION_COLORS['Just Because'];
+  const occasionStyle = getOccasionStyle(watch.occasion);
   const availStyle = AVAILABILITY_CONFIG[watch.availability] || AVAILABILITY_CONFIG['unknown'];
-
-  const handleSyncClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsSyncing(true);
-    horologyAudio.playCrownWinding();
-    try {
-      await onSync(watch);
-    } finally {
-      setIsSyncing(false);
-    }
-  };
 
   const isAcquired = watch.status === 'acquired';
   const hasPriceDrop = (watch.priceDropPercentage || 0) > 0;
@@ -164,18 +151,7 @@ export function WatchCard({ watch, onOpenDetail, onMarkAcquired, onSync }: Watch
 
       {/* Bottom Actions Toolbar */}
       <div className="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-steel-400">
-        <div className="flex items-center gap-1">
-          {/* Quick Resync Button */}
-          <button
-            onClick={handleSyncClick}
-            disabled={isSyncing}
-            title="Re-scrape current price & stock via ScrapingAnt"
-            className="p-1.5 rounded-lg bg-dial-800/80 hover:bg-dial-700 hover:text-gold-300 border border-white/5 transition-all text-xs flex items-center gap-1 disabled:opacity-50"
-          >
-            <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin text-gold-400' : ''}`} />
-            <span className="text-[10px] font-mono">{isSyncing ? 'Syncing...' : 'Sync'}</span>
-          </button>
-
+        <div>
           {/* Retailer Listing Link */}
           {watch.url && (
             <a
@@ -184,9 +160,10 @@ export function WatchCard({ watch, onOpenDetail, onMarkAcquired, onSync }: Watch
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               title={`Open ${watch.retailerName || 'listing'} product page`}
-              className="p-1.5 rounded-lg bg-dial-800/80 hover:bg-dial-700 hover:text-white border border-white/5 transition-all"
+              className="p-1.5 rounded-lg bg-dial-800/80 hover:bg-dial-700 hover:text-white border border-white/5 transition-all inline-flex items-center gap-1.5 text-xs font-mono"
             >
               <ExternalLink className="w-3 h-3" />
+              <span>Listing</span>
             </a>
           )}
         </div>

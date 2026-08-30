@@ -17,12 +17,16 @@ export function MechanicalBackground() {
           <line x1="36" y1="36" x2="164" y2="164" stroke="currentColor" strokeWidth="1" />
           <line x1="36" y1="164" x2="164" y2="36" stroke="currentColor" strokeWidth="1" />
           {/* Balance Screws */}
-          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => {
-            const rad = (angle * Math.PI) / 180;
-            const x = 100 + 88 * Math.cos(rad);
-            const y = 100 + 88 * Math.sin(rad);
-            return <circle key={angle} cx={x} cy={y} r="2.5" fill="currentColor" />;
-          })}
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
+            <circle
+              key={angle}
+              cx="100"
+              cy="12"
+              r="2.5"
+              fill="currentColor"
+              transform={`rotate(${angle} 100 100)`}
+            />
+          ))}
         </svg>
       </div>
 
@@ -33,14 +37,18 @@ export function MechanicalBackground() {
           <circle cx="100" cy="100" r="50" fill="none" stroke="currentColor" strokeWidth="1" />
           <circle cx="100" cy="100" r="20" fill="none" stroke="currentColor" strokeWidth="2" />
           {/* Gear teeth spokes */}
-          {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle) => {
-            const rad = (angle * Math.PI) / 180;
-            const x1 = 100 + 50 * Math.cos(rad);
-            const y1 = 100 + 50 * Math.sin(rad);
-            const x2 = 100 + 85 * Math.cos(rad);
-            const y2 = 100 + 85 * Math.sin(rad);
-            return <line key={angle} x1={x1} y1={y1} x2={x2} y2={y2} stroke="currentColor" strokeWidth="2" />;
-          })}
+          {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle) => (
+            <line
+              key={angle}
+              x1="100"
+              y1="50"
+              x2="100"
+              y2="15"
+              stroke="currentColor"
+              strokeWidth="2"
+              transform={`rotate(${angle} 100 100)`}
+            />
+          ))}
         </svg>
       </div>
 

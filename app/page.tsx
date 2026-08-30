@@ -9,11 +9,9 @@ import { FilterBar } from '@/components/FilterBar';
 import { WatchCard } from '@/components/WatchCard';
 import { CasebackModal } from '@/components/CasebackModal';
 import { AddWatchModal } from '@/components/AddWatchModal';
-import { horologyAudio } from '@/lib/utils';
 import {
   Plus,
   Compass,
-  RefreshCw,
   Sparkles,
   Watch as WatchIcon,
   ShieldAlert,
@@ -27,7 +25,6 @@ export default function HomePage() {
   const [currentTab, setCurrentTab] = useState<WatchStatus>('wishlist');
   const [selectedWatch, setSelectedWatch] = useState<Watch | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isSyncingAll, setIsSyncingAll] = useState(false);
 
   // Filters
   const [filters, setFilters] = useState<FilterOptions>({
@@ -54,8 +51,19 @@ export default function HomePage() {
     }
   }, []);
 
+  // Initial load and automatic background sync
   useEffect(() => {
-    fetchWatches();
+    fetchWatches().then(() => {
+      // Trigger background auto-sync without blocking initial render
+      fetch('/api/cron/recheck', { method: 'POST' })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.summary && data.summary.processed > 0) {
+            fetchWatches();
+          }
+        })
+        .catch((err) => console.warn('Automatic background sync skipped:', err));
+    });
   }, [fetchWatches]);
 
   // Keep selected watch in sync with main array
@@ -103,29 +111,23 @@ export default function HomePage() {
     }
   };
 
-  const handleSyncSingleWatch = async (watch: Watch) => {
-    const res = await fetch(`/api/watches/${watch.id}/sync`, {
-      method: 'POST',
-    });
-    const json = await res.json();
-    if (json.success) {
-      await fetchWatches();
-    }
-  };
-
-  const handleSyncAll = async () => {
-    setIsSyncingAll(true);
-    horologyAudio.playCrownWinding();
-    try {
-      const res = await fetch('/api/cron/recheck?force=true', { method: 'POST' });
-      await fetchWatches();
-    } finally {
-      setIsSyncingAll(false);
-    }
-  };
-
-  // Distinct Brands
-  const availableBrands = Array.from(new Set(watches.map((w) => w.brand))).sort();
+  // Distinct Brands and Occasions
+  const availableBrands = Array.from(new Set(watches.map((w) => w.brand).filter(Boolean))).sort();
+  const availableOccasions = Array.from(
+    new Set(
+      [
+        'Grail Goal',
+        'Birthday',
+        'Anniversary',
+        'Milestone',
+        'Promotion',
+        'Graduation',
+        'Wedding',
+        'Just Because',
+        ...watches.map((w) => w.occasion).filter(Boolean),
+      ]
+    )
+  ).sort();
 
   // Filtered & Sorted Display List
   const displayedWatches = watches
@@ -208,20 +210,9 @@ export default function HomePage() {
             {/* Live Working Analog Mechanical Clock */}
             <HeaderClock />
 
-            {/* Sync All Button */}
-            <button
-              onClick={handleSyncAll}
-              disabled={isSyncingAll}
-              title="Synchronize all active listings via ScrapingAnt"
-              className="p-2.5 rounded-full bg-dial-900 border border-white/10 hover:border-gold-500/50 text-steel-300 hover:text-white transition-all shadow-dial disabled:opacity-50"
-            >
-              <RefreshCw className={`w-4 h-4 ${isSyncingAll ? 'animate-spin text-gold-400' : ''}`} />
-            </button>
-
             {/* Add Watch Button (Crown-Winding CTA) */}
             <button
               onClick={() => {
-                horologyAudio.playCrownWinding();
                 setIsAddOpen(true);
               }}
               className="px-5 py-2.5 rounded-full bg-gold-500 hover:bg-gold-400 text-black font-semibold font-mono text-xs flex items-center gap-2 shadow-gold transition-all duration-200 hover:scale-105 active:scale-95"
@@ -242,6 +233,7 @@ export default function HomePage() {
           filters={filters}
           onFiltersChange={setFilters}
           availableBrands={availableBrands}
+          availableOccasions={availableOccasions}
           wishlistCount={wishlistCount}
           acquiredCount={acquiredCount}
         />
@@ -271,7 +263,6 @@ export default function HomePage() {
                       w.status === 'wishlist' ? new Date().toISOString().split('T')[0] : undefined,
                   })
                 }
-                onSync={handleSyncSingleWatch}
               />
             ))}
           </div>
@@ -310,7 +301,6 @@ export default function HomePage() {
         onClose={() => setSelectedWatch(null)}
         onUpdate={handleUpdateWatch}
         onDelete={handleDeleteWatch}
-        onSync={handleSyncSingleWatch}
       />
 
       {/* Add Watch Modal */}

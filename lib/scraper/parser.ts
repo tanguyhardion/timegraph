@@ -153,7 +153,7 @@ export function parseWatchHtml(html: string, sourceUrl: string): ScrapedWatchDat
     }
   }
 
-  if (!data.currency) data.currency = 'USD';
+  if (!data.currency) data.currency = 'EUR';
   if (!data.availability) data.availability = 'in_stock';
   if (!data.price) data.price = 0;
 

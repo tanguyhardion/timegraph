@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Watch, WatchOccasion, WatchAvailability, ScrapedWatchData } from '@/lib/types';
-import { formatCurrency, horologyAudio } from '@/lib/utils';
+import { formatCurrency, AVAILABILITY_CONFIG } from '@/lib/utils';
 import { X, Link2, Sparkles, Wand2, Check, AlertCircle, RefreshCw, Compass } from 'lucide-react';
 
 interface AddWatchModalProps {
@@ -10,19 +10,6 @@ interface AddWatchModalProps {
   onClose: () => void;
   onAddWatch: (newWatch: Partial<Watch>) => Promise<void>;
 }
-
-const OCCASIONS: WatchOccasion[] = [
-  'Grail Goal',
-  'Birthday',
-  'Anniversary',
-  'Milestone',
-  'Promotion',
-  'Graduation',
-  'Wedding',
-  'New Child',
-  'Retirement',
-  'Just Because',
-];
 
 export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProps) {
   const [url, setUrl] = useState('');
@@ -37,8 +24,8 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
   const [model, setModel] = useState('');
   const [referenceNumber, setReferenceNumber] = useState('');
   const [price, setPrice] = useState<number>(0);
-  const [currency, setCurrency] = useState('USD');
-  const [occasion, setOccasion] = useState<WatchOccasion>('Grail Goal');
+  const [currency, setCurrency] = useState('EUR');
+  const [occasion, setOccasion] = useState<string>('Grail Goal');
   const [availability, setAvailability] = useState<WatchAvailability>('in_stock');
   const [imageUrl, setImageUrl] = useState('');
   const [caseDiameter, setCaseDiameter] = useState('');
@@ -51,7 +38,6 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
     if (!targetUrl.trim()) return;
     setIsScraping(true);
     setScrapeError(null);
-    horologyAudio.playCrownWinding();
 
     try {
       const res = await fetch('/api/scrape', {
@@ -69,7 +55,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
         setModel(data.model || data.title || 'Reference Model');
         setReferenceNumber(data.referenceNumber || '');
         setPrice(data.price || 0);
-        setCurrency(data.currency || 'USD');
+        setCurrency(data.currency || 'EUR');
         setAvailability(data.availability || 'in_stock');
         setImageUrl(
           data.imageUrl ||
@@ -89,53 +75,43 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!model && !title) return;
+    if (!brand.trim() || !model.trim()) return;
 
     setIsSaving(true);
-    horologyAudio.playCrownWinding();
-
     try {
       await onAddWatch({
         url: url.trim(),
-        title: title || `${brand} ${model}`,
-        brand: brand || 'Independent',
-        model: model || title || 'Model',
-        referenceNumber,
+        title: title.trim() || `${brand} ${model}`,
+        brand: brand.trim(),
+        model: model.trim(),
+        referenceNumber: referenceNumber.trim(),
         currentPrice: Number(price) || 0,
         originalPrice: Number(price) || 0,
         currency,
         occasion,
         availability,
-        status: 'wishlist',
         imageUrl:
-          imageUrl ||
+          imageUrl.trim() ||
           'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80',
         specs: {
-          caseDiameter: caseDiameter || '40mm',
-          movementCaliber: movementCaliber || 'Automatic',
-          movementType: 'Automatic',
-          waterResistance: '100m',
-          powerReserve: '70 hours',
+          caseDiameter: caseDiameter.trim(),
+          movementCaliber: movementCaliber.trim(),
         },
-        notes,
-        scrapeStatus: scrapedData ? 'success' : 'manual',
+        notes: notes.trim(),
       });
       onClose();
-      // Reset form
-      setUrl('');
-      setScrapedData(null);
     } finally {
       setIsSaving(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-3xl max-h-[92vh] bg-dial-950 border-2 border-gold-500/50 rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.2)] overflow-hidden flex flex-col"
+        className="relative w-full max-w-2xl max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Fluted Gold Header */}
+        {/* Top Header */}
         <div className="fluted-bezel p-1 shrink-0">
           <div className="bg-dial-900/95 px-6 py-4 flex items-center justify-between border-b border-white/10">
             <div className="flex items-center gap-3">
@@ -166,9 +142,9 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
           {/* URL Input & Auto-Scrape Trigger */}
           <div className="space-y-2">
             <label className="text-xs font-mono text-gold-400 block tracking-wider uppercase">
-              1. Paste Product URL (ScrapingAnt Engine)
+              1. Paste Product URL
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
                 <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-steel-500">
                   <Link2 className="w-4 h-4" />
@@ -186,7 +162,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
                 type="button"
                 onClick={() => handleScrape()}
                 disabled={isScraping || !url.trim()}
-                className="px-5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-black font-semibold text-xs font-mono flex items-center gap-2 transition-all shadow-gold disabled:opacity-50 shrink-0"
+                className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-black font-semibold text-xs font-mono flex items-center gap-2 transition-all shadow-gold disabled:opacity-50 shrink-0"
               >
                 {isScraping ? (
                   <>
@@ -287,21 +263,17 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
 
               <div>
                 <label className="text-steel-400 block mb-1">OCCASION FOR PURCHASE</label>
-                <select
+                <input
+                  type="text"
+                  placeholder="e.g. Grail Goal, Birthday, Milestone"
                   value={occasion}
-                  onChange={(e) => setOccasion(e.target.value as WatchOccasion)}
+                  onChange={(e) => setOccasion(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg bg-dial-900 border border-white/10 text-white focus:border-gold-400 focus:outline-none"
-                >
-                  {OCCASIONS.map((occ) => (
-                    <option key={occ} value={occ}>
-                      {occ}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div>
-                <label className="text-steel-400 block mb-1">PRICE (USD)</label>
+                <label className="text-steel-400 block mb-1">PRICE (€)</label>
                 <input
                   type="number"
                   placeholder="e.g. 15100"

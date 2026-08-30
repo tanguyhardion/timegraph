@@ -76,15 +76,15 @@ export function StatsRibbon({ watches }: StatsRibbonProps) {
       {/* 4. Movement Escapement Beat Status */}
       <div className="p-4 rounded-2xl bg-dial-900/80 border border-white/10 backdrop-blur-md shadow-dial">
         <div className="flex items-center justify-between text-steel-400 mb-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider">Scraper Health</span>
+          <span className="text-[10px] font-mono uppercase tracking-wider">Tracker Health</span>
           <Clock className="w-3.5 h-3.5 text-gold-400" />
         </div>
         <div className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-          <span>Active / Cron</span>
+          <span>Active</span>
         </div>
         <span className="text-[10px] font-mono text-steel-500 mt-1 block">
-          ScrapingAnt + Vercel Cron daily
+          Synchronized on visit & daily
         </span>
       </div>
     </div>

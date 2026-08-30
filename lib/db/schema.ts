@@ -11,7 +11,7 @@ export const watches = pgTable('watches', {
   referenceNumber: text('reference_number'),
   currentPrice: real('current_price').notNull().default(0),
   originalPrice: real('original_price'),
-  currency: text('currency').notNull().default('USD'),
+  currency: text('currency').notNull().default('EUR'),
   lowestRecordedPrice: real('lowest_recorded_price'),
   highestRecordedPrice: real('highest_recorded_price'),
   priceDropPercentage: real('price_drop_percentage').default(0),

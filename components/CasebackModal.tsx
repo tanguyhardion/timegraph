@@ -74,6 +74,14 @@ export function CasebackModal({
     }
   }, [watch]);
 
+  // Lock body scroll while modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
   if (!isOpen || !watch) return null;
 
   const handleSave = async () => {

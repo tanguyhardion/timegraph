@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Watch, WatchOccasion, WatchAvailability, ScrapedWatchData } from '@/lib/types';
 import { formatCurrency, AVAILABILITY_CONFIG } from '@/lib/utils';
 import { X, Link2, Sparkles, Wand2, Check, AlertCircle, RefreshCw, Compass } from 'lucide-react';
@@ -31,6 +31,15 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
   const [caseDiameter, setCaseDiameter] = useState('');
   const [movementCaliber, setMovementCaliber] = useState('');
   const [notes, setNotes] = useState('');
+
+  // Lock body scroll while modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

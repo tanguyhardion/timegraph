@@ -9,12 +9,10 @@ import { FilterBar } from '@/components/FilterBar';
 import { WatchCard } from '@/components/WatchCard';
 import { CasebackModal } from '@/components/CasebackModal';
 import { AddWatchModal } from '@/components/AddWatchModal';
-import { SettingsModal } from '@/components/SettingsModal';
 import { horologyAudio } from '@/lib/utils';
 import {
   Plus,
   Compass,
-  SlidersHorizontal,
   RefreshCw,
   Sparkles,
   Watch as WatchIcon,
@@ -29,7 +27,6 @@ export default function HomePage() {
   const [currentTab, setCurrentTab] = useState<WatchStatus>('wishlist');
   const [selectedWatch, setSelectedWatch] = useState<Watch | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSyncingAll, setIsSyncingAll] = useState(false);
 
   // Filters
@@ -127,18 +124,6 @@ export default function HomePage() {
     }
   };
 
-  const handleResetSeed = async () => {
-    const res = await fetch('/api/watches', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'reset_seed' }),
-    });
-    const json = await res.json();
-    if (json.success) {
-      await fetchWatches();
-    }
-  };
-
   // Distinct Brands
   const availableBrands = Array.from(new Set(watches.map((w) => w.brand))).sort();
 
@@ -231,15 +216,6 @@ export default function HomePage() {
               className="p-2.5 rounded-full bg-dial-900 border border-white/10 hover:border-gold-500/50 text-steel-300 hover:text-white transition-all shadow-dial disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${isSyncingAll ? 'animate-spin text-gold-400' : ''}`} />
-            </button>
-
-            {/* Settings Calibration */}
-            <button
-              onClick={() => setIsSettingsOpen(true)}
-              title="Calibration & ScrapingAnt API Configuration"
-              className="p-2.5 rounded-full bg-dial-900 border border-white/10 hover:border-gold-500/50 text-steel-300 hover:text-white transition-all shadow-dial"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
             </button>
 
             {/* Add Watch Button (Crown-Winding CTA) */}
@@ -342,14 +318,6 @@ export default function HomePage() {
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onAddWatch={handleAddWatch}
-      />
-
-      {/* Settings / Calibration Modal */}
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        onResetSeed={handleResetSeed}
-        onSyncAll={handleSyncAll}
       />
     </main>
   );

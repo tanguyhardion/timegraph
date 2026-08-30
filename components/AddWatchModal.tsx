@@ -24,13 +24,6 @@ const OCCASIONS: WatchOccasion[] = [
   'Just Because',
 ];
 
-const SAMPLE_WATCH_URLS = [
-  { label: 'Rolex Submariner 41mm', url: 'https://www.rolex.com/watches/submariner/m126610ln-0001' },
-  { label: 'Omega Speedmaster Professional', url: 'https://www.omegawatches.com/en-us/watch-omega-speedmaster-moonwatch-professional-co-axial-master-chronometer-chronograph-42-mm-31030425001002' },
-  { label: 'Patek Philippe Aquanaut', url: 'https://www.patek.com/en/collection/aquanaut/5167A-001' },
-  { label: 'Grand Seiko Snowflake SBGA211', url: 'https://grand-seiko.com/us-en/collections/sbga211g' },
-];
-
 export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProps) {
   const [url, setUrl] = useState('');
   const [isScraping, setIsScraping] = useState(false);
@@ -207,24 +200,6 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
                   </>
                 )}
               </button>
-            </div>
-
-            {/* Quick Sample Links */}
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className="text-[10px] font-mono text-steel-500">Quick Try:</span>
-              {SAMPLE_WATCH_URLS.map((sample) => (
-                <button
-                  key={sample.label}
-                  type="button"
-                  onClick={() => {
-                    setUrl(sample.url);
-                    handleScrape(sample.url);
-                  }}
-                  className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-dial-800 hover:bg-dial-700 text-steel-300 hover:text-gold-300 border border-white/5 transition-colors"
-                >
-                  {sample.label}
-                </button>
-              ))}
             </div>
 
             {scrapeError && (

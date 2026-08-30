@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Volume2, VolumeX, Sparkles, Activity } from 'lucide-react';
+import { Volume2, VolumeX, Sparkles } from 'lucide-react';
 import { horologyAudio } from '@/lib/utils';
 
 export function HeaderClock() {
@@ -132,14 +132,6 @@ export function HeaderClock() {
           <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-dial-800 text-gold-300 border border-gold-500/20">
             DAY {time.date}
           </span>
-        </div>
-        <div className="flex items-center gap-2 text-[10px] text-steel-400 font-mono">
-          <span className="flex items-center gap-1">
-            <Activity className="w-2.5 h-2.5 text-emerald-400 animate-pulse" />
-            28,800 vph
-          </span>
-          <span>·</span>
-          <span className="text-emerald-400/90">+1.2 s/d</span>
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWatches, createWatch, reorderWatches, resetToSeedData } from '@/lib/db';
+import { getWatches, createWatch, reorderWatches } from '@/lib/db';
 import { FilterOptions } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
@@ -34,12 +34,6 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-
-    if (body.action === 'reset_seed') {
-      await resetToSeedData();
-      const watches = await getWatches();
-      return NextResponse.json({ success: true, message: 'Database reset to seed data', data: watches });
-    }
 
     if (body.action === 'reorder' && Array.isArray(body.orderedIds)) {
       await reorderWatches(body.orderedIds);

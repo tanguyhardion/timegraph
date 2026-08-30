@@ -2,7 +2,6 @@ import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import * as schema from './schema';
 import { Watch, PriceHistoryPoint, FilterOptions, WatchAvailability } from '../types';
-import { SEED_WATCHES } from './seed';
 import fs from 'fs';
 import path from 'path';
 
@@ -51,20 +50,9 @@ function loadLocalData(): DatabaseSchema {
     console.warn('Failed to read .timegraph_data.json, initializing fresh state', err);
   }
 
-  const initialWatches: Watch[] = [];
-  const initialHistory: PriceHistoryPoint[] = [];
-
-  SEED_WATCHES.forEach((item) => {
-    const { priceHistory, ...watch } = item;
-    initialWatches.push(watch as Watch);
-    if (priceHistory && priceHistory.length > 0) {
-      initialHistory.push(...priceHistory);
-    }
-  });
-
   const freshDb: DatabaseSchema = {
-    watches: initialWatches,
-    priceHistory: initialHistory,
+    watches: [],
+    priceHistory: [],
     lastInitialized: new Date().toISOString(),
   };
 
@@ -361,28 +349,4 @@ export async function reorderWatches(orderedIds: string[]): Promise<void> {
     }
   });
   saveLocalData(localDb);
-}
-
-/**
- * Reset data to seed
- */
-export async function resetToSeedData(): Promise<void> {
-  const initialWatches: Watch[] = [];
-  const initialHistory: PriceHistoryPoint[] = [];
-
-  SEED_WATCHES.forEach((item) => {
-    const { priceHistory, ...watch } = item;
-    initialWatches.push(watch as Watch);
-    if (priceHistory && priceHistory.length > 0) {
-      initialHistory.push(...priceHistory);
-    }
-  });
-
-  const freshDb: DatabaseSchema = {
-    watches: initialWatches,
-    priceHistory: initialHistory,
-    lastInitialized: new Date().toISOString(),
-  };
-
-  saveLocalData(freshDb);
 }

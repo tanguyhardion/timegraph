@@ -119,9 +119,6 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
                 <Compass className="w-4 h-4" />
               </div>
               <div>
-                <span className="text-[10px] font-mono tracking-widest text-gold-400 uppercase font-semibold">
-                  AUTONOMOUS SCRAPING & WISHLIST INTAKE
-                </span>
                 <h2 className="font-display text-lg font-bold text-white tracking-wide">
                   Add Timepiece by Link
                 </h2>

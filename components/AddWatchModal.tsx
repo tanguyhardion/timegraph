@@ -151,7 +151,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
                 </div>
                 <input
                   type="url"
-                  placeholder="https://www.hodinkee.com/..., https://www.rolex.com/..., https://www.chrono24.com/..."
+                  placeholder="https://www.hodinkee.com/..., https://www.omegawatches.com/..., https://www.chrono24.com/..."
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-dial-900 border border-white/10 text-white placeholder:text-steel-600 focus:border-gold-400 focus:outline-none text-xs font-mono"
@@ -231,7 +231,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Rolex, Omega, Patek Philippe"
+                  placeholder="e.g. Omega, Longines, Breitling"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg bg-dial-900 border border-white/10 text-white focus:border-gold-400 focus:outline-none"

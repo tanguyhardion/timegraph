@@ -28,12 +28,12 @@ export function parseWatchHtml(html: string, sourceUrl: string): ScrapedWatchDat
     else if (host.includes('chrono24')) data.retailerName = 'Chrono24';
     else if (host.includes('jomashop')) data.retailerName = 'Jomashop';
     else if (host.includes('watchbox') || host.includes('the1916company')) data.retailerName = 'The 1916 Company';
-    else if (host.includes('omegawatches')) data.retailerName = 'Omega Official';
+    else if (host.includes('omega')) data.retailerName = 'Omega Official';
     else if (host.includes('longines')) data.retailerName = 'Longines Official';
-    else if (host.includes('hamiltonwatch')) data.retailerName = 'Hamilton Official';
+    else if (host.includes('hamilton')) data.retailerName = 'Hamilton Official';
     else if (host.includes('breitling')) data.retailerName = 'Breitling Official';
-    else if (host.includes('tissotwatches')) data.retailerName = 'Tissot Official';
-    else if (host.includes('tudorwatch')) data.retailerName = 'Tudor Official';
+    else if (host.includes('tissot')) data.retailerName = 'Tissot Official';
+    else if (host.includes('tudor')) data.retailerName = 'Tudor Official';
     else data.retailerName = host.replace(/^www\./, '');
   } catch {
     data.retailerName = 'Online Retailer';

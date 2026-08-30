@@ -112,23 +112,7 @@ function generateSimulatedHtmlFromUrl(targetUrl: string): string {
     let price = '12500';
     let image = 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80';
 
-    if (host.includes('rolex')) {
-      brand = 'Rolex';
-      if (path.includes('submariner')) {
-        model = 'Submariner Date 41mm';
-        ref = '126610LN';
-        price = '10250';
-        image = 'https://images.unsplash.com/photo-1547996160-71dfa63582b9?auto=format&fit=crop&w=1200&q=80';
-      } else if (path.includes('gmt')) {
-        model = 'GMT-Master II "Pepsi"';
-        ref = '126710BLRO';
-        price = '10900';
-      } else if (path.includes('daytona')) {
-        model = 'Cosmograph Daytona';
-        ref = '126500LN';
-        price = '15100';
-      }
-    } else if (host.includes('omega')) {
+    if (host.includes('omega')) {
       brand = 'Omega';
       if (path.includes('speedmaster')) {
         model = 'Speedmaster Professional Moonwatch';
@@ -140,48 +124,62 @@ function generateSimulatedHtmlFromUrl(targetUrl: string): string {
         ref = '210.30.42.20.01.001';
         price = '5900';
       }
-    } else if (host.includes('patek')) {
-      brand = 'Patek Philippe';
-      if (path.includes('aquanaut')) {
-        model = 'Aquanaut 5167A';
-        ref = '5167A-001';
-        price = '24250';
-      } else if (path.includes('nautilus')) {
-        model = 'Nautilus 5811/1G';
-        ref = '5811/1G-001';
-        price = '69780';
+    } else if (host.includes('longines')) {
+      brand = 'Longines';
+      if (path.includes('hydroconquest')) {
+        model = 'HydroConquest 41mm';
+        ref = 'L3.781.4.96.6';
+        price = '1500';
       } else {
-        model = 'Calatrava Classic';
-        ref = '5227G-010';
-        price = '38200';
+        model = 'Master Collection Automatic';
+        ref = 'L2.793.4.78.3';
+        price = '2400';
       }
-    } else if (host.includes('cartier')) {
-      brand = 'Cartier';
-      model = 'Santos de Cartier Medium';
-      ref = 'WSSA0029';
-      price = '7050';
-      image = 'https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&w=1200&q=80';
-    } else if (host.includes('grand-seiko')) {
-      brand = 'Grand Seiko';
-      model = 'Heritage Spring Drive Snowflake';
-      ref = 'SBGA211';
-      price = '5800';
-      image = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80';
-    } else if (host.includes('alange-soehne')) {
-      brand = 'A. Lange & Söhne';
-      model = 'Datograph Up/Down';
-      ref = '405.035';
-      price = '104500';
-    } else if (host.includes('audemarspiguet') || host.includes('ap')) {
-      brand = 'Audemars Piguet';
-      model = 'Royal Oak "Jumbo" Extra-Thin';
-      ref = '16202ST.OO.1240ST.01';
-      price = '33200';
-    } else if (host.includes('vacheron')) {
-      brand = 'Vacheron Constantin';
-      model = 'Overseas Automatic 41mm Blue Dial';
-      ref = '4500V/110A-B128';
-      price = '25000';
+    } else if (host.includes('hamilton')) {
+      brand = 'Hamilton';
+      if (path.includes('khaki')) {
+        model = 'Khaki Field Automatic';
+        ref = 'H70605140';
+        price = '695';
+      } else {
+        model = 'Jazzmaster Viewmatic';
+        ref = 'H32475130';
+        price = '895';
+      }
+    } else if (host.includes('breitling')) {
+      brand = 'Breitling';
+      if (path.includes('navitimer')) {
+        model = 'Navitimer B01 Chronograph 46';
+        ref = 'AB0138211C1A1';
+        price = '9000';
+      } else {
+        model = 'Superocean Automatic 42';
+        ref = 'A17375211C1A1';
+        price = '4300';
+      }
+    } else if (host.includes('tissot')) {
+      brand = 'Tissot';
+      if (path.includes('prx')) {
+        model = 'PRX Powermatic 80';
+        ref = 'T137.407.11.041.00';
+        price = '750';
+      } else {
+        model = 'Seastar 1000 Powermatic 80';
+        ref = 'T120.407.11.041.00';
+        price = '650';
+      }
+    } else if (host.includes('tudor')) {
+      brand = 'Tudor';
+      if (path.includes('black-bay')) {
+        model = 'Black Bay 58';
+        ref = 'M79030N-0001';
+        price = '3900';
+        image = 'https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&w=1200&q=80';
+      } else {
+        model = 'Pelagos 39';
+        ref = 'M25407N-0001';
+        price = '4400';
+      }
     }
 
     return `

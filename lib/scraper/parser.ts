@@ -2,32 +2,12 @@ import * as cheerio from 'cheerio';
 import { ScrapedWatchData, WatchAvailability, WatchSpecs } from '../types';
 
 const KNOWN_BRANDS = [
-  'A. Lange & Söhne',
-  'Audemars Piguet',
-  'Blancpain',
-  'Breguet',
   'Breitling',
-  'Cartier',
-  'Chopard',
-  'F.P. Journe',
-  'Grand Seiko',
-  'H. Moser & Cie.',
-  'Hublot',
-  'IWC',
-  'Jaeger-LeCoultre',
+  'Hamilton',
   'Longines',
-  'MB&F',
-  'NOMOS Glashütte',
   'Omega',
-  'Panerai',
-  'Patek Philippe',
-  'Richard Mille',
-  'Rolex',
-  'Seiko',
-  'TAG Heuer',
+  'Tissot',
   'Tudor',
-  'Vacheron Constantin',
-  'Zenith',
 ];
 
 /**
@@ -48,12 +28,12 @@ export function parseWatchHtml(html: string, sourceUrl: string): ScrapedWatchDat
     else if (host.includes('chrono24')) data.retailerName = 'Chrono24';
     else if (host.includes('jomashop')) data.retailerName = 'Jomashop';
     else if (host.includes('watchbox') || host.includes('the1916company')) data.retailerName = 'The 1916 Company';
-    else if (host.includes('rolex')) data.retailerName = 'Rolex Official';
     else if (host.includes('omegawatches')) data.retailerName = 'Omega Official';
-    else if (host.includes('patek')) data.retailerName = 'Patek Philippe';
-    else if (host.includes('alange-soehne')) data.retailerName = 'A. Lange & Söhne';
-    else if (host.includes('grand-seiko')) data.retailerName = 'Grand Seiko';
-    else if (host.includes('cartier')) data.retailerName = 'Cartier';
+    else if (host.includes('longines')) data.retailerName = 'Longines Official';
+    else if (host.includes('hamiltonwatch')) data.retailerName = 'Hamilton Official';
+    else if (host.includes('breitling')) data.retailerName = 'Breitling Official';
+    else if (host.includes('tissotwatches')) data.retailerName = 'Tissot Official';
+    else if (host.includes('tudorwatch')) data.retailerName = 'Tudor Official';
     else data.retailerName = host.replace(/^www\./, '');
   } catch {
     data.retailerName = 'Online Retailer';

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'TIMEGRAPH — Horological Watch Wishlist & Autonomous Price Tracker',
+  title: 'Timegraph',
   description:
     'A personal luxury mechanical watch movement wishlist. Paste a link to auto-scrape specs, track real-time price drops & restocks.',
 };

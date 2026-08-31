@@ -110,13 +110,24 @@ export function parseWatchHtml(html: string, sourceUrl: string): ScrapedWatchDat
 
   // 7. Parse Price from HTML if not yet found
   if (!data.price) {
-    const priceText =
-      $('[class*="price"], [id*="price"], [itemprop="price"]').first().text() ||
-      $('span:contains("$"), div:contains("$"), p:contains("$")').first().text();
-    const parsedPrice = parsePriceNumber(priceText);
-    if (parsedPrice) {
-      data.price = parsedPrice;
-      data.currency = data.currency || detectCurrency(priceText);
+    // Look specifically for elements with price in class/id/itemprop or containing currency symbols
+    const candidates = [
+      $('[itemprop="price"]').first().attr('content') || $('[itemprop="price"]').first().text(),
+      $('[class*="price"]:not(body):not(html), [id*="price"]:not(body):not(html)').filter((_, el) => {
+        const t = $(el).text();
+        return /[\$€£¥]|(?:USD|EUR|GBP|CHF)\b/i.test(t) || /^\s*[0-9]+(?:[,.][0-9]{2})?\s*$/.test(t.trim());
+      }).first().text(),
+      $('span:contains("$"), span:contains("€"), span:contains("£"), span:contains("CHF")').first().text(),
+    ];
+
+    for (const candidate of candidates) {
+      if (!candidate) continue;
+      const parsedPrice = parsePriceNumber(candidate);
+      if (parsedPrice > 0) {
+        data.price = parsedPrice;
+        data.currency = data.currency || detectCurrency(candidate);
+        break;
+      }
     }
   }
 
@@ -242,12 +253,45 @@ function extractSpecs($: cheerio.CheerioAPI, data: ScrapedWatchData) {
 }
 
 function parsePriceNumber(val: string | number): number {
-  if (typeof val === 'number') return val;
-  if (!val) return 0;
-  // Remove currency signs, commas, extra whitespace
-  const clean = val.replace(/[^0-9.]/g, '');
-  const num = parseFloat(clean);
-  return isNaN(num) ? 0 : num;
+  if (typeof val === 'number') {
+    return isFinite(val) && val >= 0 && val < 50_000_000 ? val : 0;
+  }
+  if (!val || typeof val !== 'string') return 0;
+
+  // Trim and check
+  const trimmed = val.trim();
+  if (!trimmed) return 0;
+
+  // Match monetary patterns like $4,160.00, 4.160,00 €, 4160, 4,160
+  // e.g. match numeric cluster with commas or dots
+  const match = trimmed.match(/(?:[\$€£¥]|USD|EUR|GBP|CHF)?\s*([0-9]{1,3}(?:[,\s.][0-9]{3})*(?:[.,][0-9]{2})?|[0-9]+(?:[.,][0-9]{2})?|[0-9]+)/i);
+  if (!match || !match[1]) return 0;
+
+  let numStr = match[1].replace(/\s+/g, '');
+  // Normalize commas/dots
+  if (numStr.includes(',') && numStr.includes('.')) {
+    if (numStr.lastIndexOf(',') > numStr.lastIndexOf('.')) {
+      // European format: 1.234,56 -> 1234.56
+      numStr = numStr.replace(/\./g, '').replace(',', '.');
+    } else {
+      // US format: 1,234.56 -> 1234.56
+      numStr = numStr.replace(/,/g, '');
+    }
+  } else if (numStr.includes(',')) {
+    // Check if comma is decimal (e.g. 29,50) or thousands (e.g. 4,160)
+    const parts = numStr.split(',');
+    if (parts.length === 2 && parts[1].length === 2) {
+      numStr = numStr.replace(',', '.');
+    } else {
+      numStr = numStr.replace(/,/g, '');
+    }
+  }
+
+  const num = parseFloat(numStr);
+  if (isNaN(num) || !isFinite(num) || num < 0 || num > 50_000_000) {
+    return 0;
+  }
+  return num;
 }
 
 function detectCurrency(text: string): string {

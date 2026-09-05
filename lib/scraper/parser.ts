@@ -258,36 +258,60 @@ function parsePriceNumber(val: string | number): number {
   }
   if (!val || typeof val !== 'string') return 0;
 
-  // Trim and check
-  const trimmed = val.trim();
-  if (!trimmed) return 0;
+  // Replace non-breaking spaces and narrow NBSP with standard space
+  let clean = val.replace(/[\u00A0\u202F\u2000-\u200B]/g, ' ').trim();
+  if (!clean) return 0;
 
-  // Match monetary patterns like $4,160.00, 4.160,00 €, 4160, 4,160
-  // e.g. match numeric cluster with commas or dots
-  const match = trimmed.match(/(?:[\$€£¥]|USD|EUR|GBP|CHF)?\s*([0-9]{1,3}(?:[,\s.][0-9]{3})*(?:[.,][0-9]{2})?|[0-9]+(?:[.,][0-9]{2})?|[0-9]+)/i);
+  // Match monetary patterns with possible thousands separators (spaces, commas, dots, apostrophes)
+  // Example matches: "2 150,00 €", "2 150 €", "3 750 €", "2,150.00", "2.150,00", "625 €", "2150"
+  const match = clean.match(/(?:[\$€£¥]|USD|EUR|GBP|CHF)?\s*([0-9]{1,3}(?:(?:[,\s.\u00A0\u202F'])\d{3})*(?:[.,]\d{1,2})?|[0-9]+(?:[.,]\d{1,2})?|[0-9]+)/i);
   if (!match || !match[1]) return 0;
 
-  let numStr = match[1].replace(/\s+/g, '');
-  // Normalize commas/dots
-  if (numStr.includes(',') && numStr.includes('.')) {
-    if (numStr.lastIndexOf(',') > numStr.lastIndexOf('.')) {
+  let rawNum = match[1].trim();
+
+  // If there are spaces or apostrophes between digits, they are definitely thousands separators
+  // e.g. "2 150,00" -> "2150,00", "2 150" -> "2150", "3'750.00" -> "3750.00"
+  rawNum = rawNum.replace(/[\s']/g, '');
+
+  if (rawNum.includes(',') && rawNum.includes('.')) {
+    if (rawNum.lastIndexOf(',') > rawNum.lastIndexOf('.')) {
       // European format: 1.234,56 -> 1234.56
-      numStr = numStr.replace(/\./g, '').replace(',', '.');
+      rawNum = rawNum.replace(/\./g, '').replace(',', '.');
     } else {
       // US format: 1,234.56 -> 1234.56
-      numStr = numStr.replace(/,/g, '');
+      rawNum = rawNum.replace(/,/g, '');
     }
-  } else if (numStr.includes(',')) {
-    // Check if comma is decimal (e.g. 29,50) or thousands (e.g. 4,160)
-    const parts = numStr.split(',');
-    if (parts.length === 2 && parts[1].length === 2) {
-      numStr = numStr.replace(',', '.');
+  } else if (rawNum.includes(',')) {
+    const parts = rawNum.split(',');
+    if (parts.length === 2) {
+      // If the part after comma is exactly 3 digits (e.g. "2,150"), it's a thousands separator
+      if (parts[1].length === 3) {
+        rawNum = parts[0] + parts[1];
+      } else {
+        // Decimal separator (e.g. "2150,00" or "29,50" or "625,0")
+        rawNum = parts[0] + '.' + parts[1];
+      }
     } else {
-      numStr = numStr.replace(/,/g, '');
+      // Multiple commas: thousands separators e.g. "1,000,000"
+      rawNum = rawNum.replace(/,/g, '');
+    }
+  } else if (rawNum.includes('.')) {
+    const parts = rawNum.split('.');
+    if (parts.length === 2) {
+      // If the part after dot is exactly 3 digits and not followed by another dot/comma (e.g. "2.150"),
+      // in European watch sites (like Longines / Swatch Group) dot is often used as thousands separator
+      if (parts[1].length === 3) {
+        rawNum = parts[0] + parts[1];
+      } else {
+        // Standard decimal dot e.g. "2150.00"
+      }
+    } else {
+      // Multiple dots e.g. "1.000.000"
+      rawNum = rawNum.replace(/\./g, '');
     }
   }
 
-  const num = parseFloat(numStr);
+  const num = parseFloat(rawNum);
   if (isNaN(num) || !isFinite(num) || num < 0 || num > 50_000_000) {
     return 0;
   }

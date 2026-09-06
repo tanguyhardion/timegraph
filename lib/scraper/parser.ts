@@ -263,8 +263,8 @@ function parsePriceNumber(val: string | number): number {
   if (!clean) return 0;
 
   // Match monetary patterns with possible thousands separators (spaces, commas, dots, apostrophes)
-  // Example matches: "2 150,00 €", "2 150 €", "3 750 €", "2,150.00", "2.150,00", "625 €", "2150"
-  const match = clean.match(/(?:[\$€£¥]|USD|EUR|GBP|CHF)?\s*([0-9]{1,3}(?:(?:[,\s.\u00A0\u202F'])\d{3})*(?:[.,]\d{1,2})?|[0-9]+(?:[.,]\d{1,2})?|[0-9]+)/i);
+  // Example matches: "2 150,00 €", "2 150 €", "3 750 €", "2,150.00", "2.150,00", "625 €", "2150", "2150,00€"
+  const match = clean.match(/(?:[\$€£¥]|USD|EUR|GBP|CHF)?\s*([0-9]{1,3}(?:[,\s.\u00A0\u202F']\d{3})+(?:[.,]\d{1,2})?|[0-9]+(?:[.,]\d{1,2})?)/i);
   if (!match || !match[1]) return 0;
 
   let rawNum = match[1].trim();

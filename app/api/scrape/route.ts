@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchHtmlWithScrapingAnt } from '@/lib/scraper/scrapingant';
 import { parseWatchHtml } from '@/lib/scraper/parser';
+import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
+    const token = request.cookies.get('timegraph_session')?.value;
+    if (!verifySessionToken(token)) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { url, apiKey } = body;
 

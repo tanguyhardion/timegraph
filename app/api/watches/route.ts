@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getWatches, createWatch, reorderWatches } from '@/lib/db';
 import { FilterOptions } from '@/lib/types';
+import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
+    const token = request.cookies.get('timegraph_session')?.value;
+    if (!verifySessionToken(token)) {
+      return NextResponse.json({ success: false, error: 'Unauthorized: Master password required' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') as FilterOptions['status'] | null;
     const occasion = searchParams.get('occasion') as FilterOptions['occasion'] | null;
@@ -33,6 +39,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const token = request.cookies.get('timegraph_session')?.value;
+    if (!verifySessionToken(token)) {
+      return NextResponse.json({ success: false, error: 'Unauthorized: Master password required' }, { status: 401 });
+    }
+
     const body = await request.json();
 
     if (body.action === 'reorder' && Array.isArray(body.orderedIds)) {

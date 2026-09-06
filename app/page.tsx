@@ -9,6 +9,7 @@ import { FilterBar } from '@/components/FilterBar';
 import { WatchCard } from '@/components/WatchCard';
 import { CasebackModal } from '@/components/CasebackModal';
 import { AddWatchModal } from '@/components/AddWatchModal';
+import { MasterPasswordModal } from '@/components/MasterPasswordModal';
 import {
   Plus,
   Compass,
@@ -17,9 +18,12 @@ import {
   ShieldAlert,
   Archive,
   Layers,
+  Lock,
+  LogOut,
 } from 'lucide-react';
 
 export default function HomePage() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [watches, setWatches] = useState<Watch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState<WatchStatus>('wishlist');
@@ -40,8 +44,14 @@ export default function HomePage() {
     try {
       setIsLoading(true);
       const res = await fetch('/api/watches');
+      if (res.status === 401) {
+        setIsAuthenticated(false);
+        setWatches([]);
+        return;
+      }
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
+        setIsAuthenticated(true);
         setWatches(json.data);
       }
     } catch (err) {
@@ -51,10 +61,32 @@ export default function HomePage() {
     }
   }, []);
 
-  // Initial load and automatic background sync
+  const checkAuth = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth');
+      const json = await res.json();
+      if (json.authenticated) {
+        setIsAuthenticated(true);
+        fetchWatches();
+      } else {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error('Failed to check auth status:', err);
+      setIsAuthenticated(false);
+      setIsLoading(false);
+    }
+  }, [fetchWatches]);
+
+  // Initial load
   useEffect(() => {
-    fetchWatches().then(() => {
-      // Trigger background auto-sync without blocking initial render
+    checkAuth();
+  }, [checkAuth]);
+
+  // Background sync after authentication
+  useEffect(() => {
+    if (isAuthenticated) {
       fetch('/api/cron/recheck', { method: 'POST' })
         .then((res) => res.json())
         .then((data) => {
@@ -63,8 +95,19 @@ export default function HomePage() {
           }
         })
         .catch((err) => console.warn('Automatic background sync skipped:', err));
-    });
-  }, [fetchWatches]);
+    }
+  }, [isAuthenticated, fetchWatches]);
+
+  const handleLockVault = async () => {
+    try {
+      await fetch('/api/auth', { method: 'DELETE' });
+      setIsAuthenticated(false);
+      setWatches([]);
+      setSelectedWatch(null);
+    } catch (err) {
+      console.error('Error locking vault:', err);
+    }
+  };
 
   // Keep selected watch in sync with main array
   useEffect(() => {
@@ -210,12 +253,24 @@ export default function HomePage() {
             {/* Live Working Analog Mechanical Clock */}
             <HeaderClock />
 
+            {/* Lock Vault Button */}
+            {isAuthenticated && (
+              <button
+                onClick={handleLockVault}
+                title="Lock Vault"
+                className="px-3.5 py-2.5 rounded-full border border-white/10 bg-dial-900/80 hover:bg-rose-500/10 hover:border-rose-500/30 text-steel-400 hover:text-rose-300 font-mono text-xs flex items-center gap-2 transition-all duration-200 cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Lock Vault</span>
+              </button>
+            )}
+
             {/* Add Watch Button (Crown-Winding CTA) */}
             <button
               onClick={() => {
                 setIsAddOpen(true);
               }}
-              className="px-5 py-2.5 rounded-full bg-gold-500 hover:bg-gold-400 text-black font-semibold font-mono text-xs flex items-center gap-2 shadow-gold transition-all duration-200 hover:scale-105 active:scale-95"
+              className="px-5 py-2.5 rounded-full bg-gold-500 hover:bg-gold-400 text-black font-semibold font-mono text-xs flex items-center gap-2 shadow-gold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Add Watch by Link</span>
@@ -308,6 +363,15 @@ export default function HomePage() {
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onAddWatch={handleAddWatch}
+      />
+
+      {/* Master Password Gate Modal */}
+      <MasterPasswordModal
+        isOpen={isAuthenticated === false}
+        onSuccess={() => {
+          setIsAuthenticated(true);
+          fetchWatches();
+        }}
       />
     </main>
   );

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getWatchById, updateWatch } from '@/lib/db';
 import { fetchHtmlWithScrapingAnt } from '@/lib/scraper/scrapingant';
 import { parseWatchHtml } from '@/lib/scraper/parser';
+import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,11 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const token = request.cookies.get('timegraph_session')?.value;
+    if (!verifySessionToken(token)) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { id } = await params;
     const existing = await getWatchById(id);
 

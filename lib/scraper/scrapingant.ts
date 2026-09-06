@@ -23,6 +23,7 @@ export async function fetchHtmlWithScrapingAnt(
   options: ScrapingAntOptions = {}
 ): Promise<ScrapingAntResult> {
   const apiKey = options.apiKey || process.env.SCRAPINGANT_API_KEY;
+  const proxyCountry = options.proxyCountry || 'FR';
 
   if (apiKey && apiKey.trim().length > 5) {
     try {
@@ -30,8 +31,7 @@ export async function fetchHtmlWithScrapingAnt(
       endpoint.searchParams.set('url', targetUrl);
       endpoint.searchParams.set('x-api-key', apiKey.trim());
       endpoint.searchParams.set('browser', options.browser !== false ? 'true' : 'false');
-      if (options.proxyType) endpoint.searchParams.set('proxy_type', options.proxyType);
-      if (options.proxyCountry) endpoint.searchParams.set('proxy_country', options.proxyCountry);
+      endpoint.searchParams.set('proxy_country', proxyCountry);
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), options.timeoutMs || 30000);
@@ -39,6 +39,7 @@ export async function fetchHtmlWithScrapingAnt(
       const response = await fetch(endpoint.toString(), {
         headers: {
           Accept: 'text/html,application/xhtml+xml,application/xml',
+          'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
         },
         signal: controller.signal,
       });
@@ -69,7 +70,7 @@ export async function fetchHtmlWithScrapingAnt(
         'User-Agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
         'Cache-Control': 'no-cache',
       },
       signal: controller.signal,

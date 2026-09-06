@@ -110,9 +110,11 @@ export function parseWatchHtml(html: string, sourceUrl: string): ScrapedWatchDat
 
   // 7. Parse Price from HTML if not yet found
   if (!data.price) {
-    // Look specifically for elements with price in class/id/itemprop or containing currency symbols
+    // Look specifically for elements with price in class/id/itemprop or containing currency symbols.
+    // Prioritize EUR symbols (€, EUR) so European pricing is preferred over foreign currencies if both appear.
     const candidates = [
       $('[itemprop="price"]').first().attr('content') || $('[itemprop="price"]').first().text(),
+      $('span:contains("€"), [class*="price"]:contains("€"), [id*="price"]:contains("€")').first().text(),
       $('[class*="price"]:not(body):not(html), [id*="price"]:not(body):not(html)').filter((_, el) => {
         const t = $(el).text();
         return /[\$€£¥]|(?:USD|EUR|GBP|CHF)\b/i.test(t) || /^\s*[0-9]+(?:[,.][0-9]{2})?\s*$/.test(t.trim());

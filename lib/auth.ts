@@ -22,7 +22,7 @@ export function createSessionToken(): string {
 
 /**
  * Validates the session token.
- * Max token lifetime: 30 days.
+ * Max token lifetime: 24 hours (for active session).
  */
 export function verifySessionToken(token: string | null | undefined): boolean {
   if (!token || typeof token !== 'string') return false;
@@ -34,8 +34,8 @@ export function verifySessionToken(token: string | null | undefined): boolean {
   const timestamp = parseInt(timestampStr, 10);
   if (isNaN(timestamp)) return false;
 
-  // Check expiration (30 days)
-  const maxAge = 30 * 24 * 60 * 60 * 1000;
+  // Max session lifetime window (24 hours)
+  const maxAge = 24 * 60 * 60 * 1000;
   if (Date.now() - timestamp > maxAge || timestamp > Date.now() + 60000) {
     return false;
   }

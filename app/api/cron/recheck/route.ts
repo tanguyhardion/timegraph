@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getWatches, updateWatch } from '@/lib/db';
 import { fetchHtmlWithScrapingAnt } from '@/lib/scraper/scrapingant';
 import { parseWatchHtml } from '@/lib/scraper/parser';
+import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +19,9 @@ async function handleCron(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET;
 
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    const hasSession = verifySessionToken(request.cookies.get('timegraph_session')?.value);
+
+    if (cronSecret && !hasSession && authHeader !== `Bearer ${cronSecret}`) {
       const url = new URL(request.url);
       const queryKey = url.searchParams.get('key');
       if (queryKey !== cronSecret) {
@@ -111,6 +114,7 @@ async function handleCron(request: NextRequest) {
       summary: {
         totalChecked: activeWatches.length,
         processed: results.filter((r) => r.status === 'updated').length,
+        errors: results.filter((r) => r.status === 'error_stale_retained').length,
         skippedCached: results.filter((r) => r.status === 'skipped_cached').length,
         priceDropsCount: priceDrops.length,
         restocksCount: restocks.length,

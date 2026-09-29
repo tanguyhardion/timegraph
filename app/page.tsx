@@ -90,7 +90,7 @@ export default function HomePage() {
       fetch('/api/cron/recheck', { method: 'POST' })
         .then((res) => res.json())
         .then((data) => {
-          if (data.summary && data.summary.processed > 0) {
+          if (data.summary && (data.summary.processed > 0 || data.summary.errors > 0)) {
             fetchWatches();
           }
         })

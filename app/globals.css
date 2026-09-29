@@ -1,15 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap');
 @import "tailwindcss";
 
-/* Prevent iOS zoom-on-focus in form fields on small screens */
-@media (max-width: 639px) {
-  input:not([type='checkbox']):not([type='radio']),
-  select,
-  textarea {
-    font-size: 16px !important;
-  }
-}
-
 /* ─────────────────────────────────────────
    Tailwind v4 theme — CSS-first config
    (replaces tailwind.config.js)

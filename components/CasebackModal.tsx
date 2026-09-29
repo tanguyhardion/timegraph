@@ -118,7 +118,7 @@ export function CasebackModal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       {/* Modal Container: Styled as Sapphire Exhibition Caseback */}
       <div
-        className="relative w-full max-w-4xl max-h-[92dvh] sm:max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-t-3xl rounded-b-none sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
+        className="relative w-full min-w-0 max-w-4xl max-h-[calc(100dvh-1rem)] sm:max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-t-3xl rounded-b-none sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Caseback Bezel Header */}
@@ -155,7 +155,7 @@ export function CasebackModal({
 
         {/* Tab Navigation */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 sm:px-6 py-2 bg-dial-900 border-b border-white/10 shrink-0 text-xs font-mono">
-          <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap pb-0.5">
+          <div className="flex items-center gap-2 min-w-0 max-w-full overflow-x-auto whitespace-nowrap pb-0.5">
             <button
               onClick={() => {
                 setActiveTab('specs');
@@ -216,7 +216,7 @@ export function CasebackModal({
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6 flex-1">
+        <div className="p-4 sm:p-6 pb-[max(1rem,env(safe-area-inset-bottom))] overflow-y-auto overflow-x-hidden min-h-0 min-w-0 space-y-4 sm:space-y-6 flex-1">
           {/* TAB 1: Movement & Specs Exhibition */}
           {activeTab === 'specs' && !isEditing && (
             <div className="space-y-6">
@@ -224,7 +224,7 @@ export function CasebackModal({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-center p-4 sm:p-6 rounded-2xl bg-dial-900/60 border border-white/10 cotes-de-geneve">
                 {/* Watch Photo Dial Motif */}
                 <div className="flex flex-col items-center justify-center">
-                  <div className="w-36 h-36 sm:w-48 sm:h-48 rounded-full fluted-bezel p-2 shadow-2xl">
+                  <div className="w-48 h-48 rounded-full fluted-bezel p-2 shadow-2xl">
                     <div className="w-full h-full rounded-full overflow-hidden bg-dial-950 border border-white/20">
                       <img
                         src={watch.imageUrl}
@@ -371,7 +371,7 @@ export function CasebackModal({
                   </div>
                 </div>
 
-                <div className="py-4 overflow-x-auto">
+                <div className="py-4 max-w-full overflow-x-auto">
                   <SparklineChart
                     history={watch.priceHistory || []}
                     currentPrice={watch.currentPrice}

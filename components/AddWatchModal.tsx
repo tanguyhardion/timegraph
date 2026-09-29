@@ -117,7 +117,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-2xl max-h-[92dvh] sm:max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-t-3xl rounded-b-none sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
+        className="relative w-full min-w-0 max-w-2xl max-h-[calc(100dvh-1rem)] sm:max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-t-3xl rounded-b-none sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
@@ -144,7 +144,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
         </div>
 
         {/* Scrollable Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6 flex-1">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 pb-[max(1rem,env(safe-area-inset-bottom))] overflow-y-auto overflow-x-hidden min-h-0 space-y-5 sm:space-y-6 flex-1">
           {/* URL Input & Auto-Scrape Trigger */}
           <div className="space-y-2">
             <label className="text-xs font-mono text-gold-400 block tracking-wider uppercase">

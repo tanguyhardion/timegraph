@@ -7,9 +7,14 @@ import { Landmark, CheckCircle2, TrendingDown, Clock, ShieldCheck } from 'lucide
 
 interface StatsRibbonProps {
   watches: Watch[];
+  isLoading?: boolean;
 }
 
-export function StatsRibbon({ watches }: StatsRibbonProps) {
+function Placeholder({ className = 'w-28' }: { className?: string }) {
+  return <span className={`inline-block h-6 sm:h-7 rounded bg-white/10 animate-pulse align-middle ${className}`} />;
+}
+
+export function StatsRibbon({ watches, isLoading = false }: StatsRibbonProps) {
   const wishlistItems = watches.filter((w) => w.status === 'wishlist');
   const acquiredItems = watches.filter((w) => w.status === 'acquired');
 
@@ -33,10 +38,10 @@ export function StatsRibbon({ watches }: StatsRibbonProps) {
           <Landmark className="w-3.5 h-3.5 text-gold-400" />
         </div>
         <div className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight">
-          {formatCurrency(totalWishlistValuation)}
+          {isLoading ? <Placeholder /> : formatCurrency(totalWishlistValuation)}
         </div>
         <span className="text-[10px] font-mono text-steel-500 mt-1 block">
-          {wishlistItems.length} active timepieces tracked
+          {isLoading ? 'Loading…' : `${wishlistItems.length} active timepieces tracked`}
         </span>
       </div>
 
@@ -47,10 +52,10 @@ export function StatsRibbon({ watches }: StatsRibbonProps) {
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
         </div>
         <div className="font-display text-xl sm:text-2xl font-bold text-emerald-300 tracking-tight">
-          {formatCurrency(totalAcquiredValuation)}
+          {isLoading ? <Placeholder /> : formatCurrency(totalAcquiredValuation)}
         </div>
         <span className="text-[10px] font-mono text-steel-500 mt-1 block">
-          {acquiredItems.length} permanent archive pieces
+          {isLoading ? 'Loading…' : `${acquiredItems.length} permanent archive pieces`}
         </span>
       </div>
 
@@ -61,8 +66,8 @@ export function StatsRibbon({ watches }: StatsRibbonProps) {
           <TrendingDown className="w-3.5 h-3.5 text-rose-400" />
         </div>
         <div className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight flex items-baseline gap-2">
-          <span>{priceDropItems.length} Watches</span>
-          {totalDiscountSaved > 0 && (
+          {isLoading ? <Placeholder className="w-24" /> : <span>{priceDropItems.length} Watches</span>}
+          {!isLoading && totalDiscountSaved > 0 && (
             <span className="text-xs font-mono text-emerald-400 font-normal">
               (-{formatCurrency(totalDiscountSaved)})
             </span>

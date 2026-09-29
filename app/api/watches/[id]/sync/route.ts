@@ -5,6 +5,7 @@ import { parseWatchHtml } from '@/lib/scraper/parser';
 import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
 
 export async function POST(
   request: NextRequest,
@@ -27,13 +28,21 @@ export async function POST(
       return NextResponse.json({ success: false, error: 'Watch does not have a valid link to sync' }, { status: 400 });
     }
 
-    const { html, statusCode, source } = await fetchHtmlWithScrapingAnt(existing.url);
+    let fetched;
+    try {
+      fetched = await fetchHtmlWithScrapingAnt(existing.url);
+    } catch (fetchErr: any) {
+      await updateWatch(id, { scrapeStatus: 'stale', scrapeErrorMessage: fetchErr.message || 'Scrape failed' });
+      throw fetchErr;
+    }
+    const { html, statusCode, source } = fetched;
     const parsed = parseWatchHtml(html, existing.url);
 
     const now = new Date().toISOString();
     const updates: any = {
       lastScrapedAt: now,
       scrapeStatus: statusCode === 200 ? 'success' : 'stale',
+          scrapeErrorMessage: '',
     };
 
     if (parsed.price && parsed.price > 0) {

@@ -222,7 +222,8 @@ export default function HomePage() {
       {/* Ambient Horological Movement Background */}
       <MechanicalBackground />
 
-      {/* Primary Container */}
+      {/* Primary Container (hidden until the vault is unlocked) */}
+      {isAuthenticated && (
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         {/* Navigation Bar */}
         <header className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-white/10">
@@ -279,7 +280,7 @@ export default function HomePage() {
         </header>
 
         {/* Portfolio Stats Ribbon */}
-        <StatsRibbon watches={watches} />
+        <StatsRibbon watches={watches} isLoading={isLoading && watches.length === 0} />
 
         {/* Filters & Tabs */}
         <FilterBar
@@ -294,14 +295,16 @@ export default function HomePage() {
         />
 
         {/* Watch Dial Grid */}
-        {isLoading ? (
-          <div className="py-24 flex flex-col items-center justify-center space-y-4">
-            <div className="w-16 h-16 rounded-full fluted-bezel p-1 animate-spin">
-              <div className="w-full h-full rounded-full bg-dial-950 border border-gold-400/40" />
-            </div>
-            <p className="font-mono text-xs text-gold-400 tracking-wider uppercase">
-              Escapement synchronizing watch records...
-            </p>
+        {isLoading && watches.length === 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-busy="true">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="rounded-3xl bg-dial-900/60 border border-white/10 p-4 animate-pulse">
+                <div className="aspect-square rounded-2xl bg-white/5 mb-4" />
+                <div className="h-3 w-1/3 rounded bg-white/10 mb-2" />
+                <div className="h-4 w-2/3 rounded bg-white/10 mb-4" />
+                <div className="h-6 w-1/2 rounded bg-gold-500/10" />
+              </div>
+            ))}
           </div>
         ) : displayedWatches.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -348,6 +351,7 @@ export default function HomePage() {
           </div>
         )}
       </div>
+      )}
 
       {/* Detail / Caseback Exhibition Modal */}
       <CasebackModal

@@ -5,6 +5,7 @@ import { parseWatchHtml } from '@/lib/scraper/parser';
 import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
 
 export async function GET(request: NextRequest) {
   return handleCron(request);
@@ -61,6 +62,7 @@ async function handleCron(request: NextRequest) {
         const updates: any = {
           lastScrapedAt: new Date().toISOString(),
           scrapeStatus: statusCode === 200 ? 'success' : 'stale',
+          scrapeErrorMessage: '',
         };
 
         const oldPrice = watch.currentPrice;

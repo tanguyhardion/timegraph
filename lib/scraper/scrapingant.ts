@@ -25,39 +25,49 @@ export async function fetchHtmlWithScrapingAnt(
   const apiKey = options.apiKey || process.env.SCRAPINGANT_API_KEY;
   const proxyCountry = options.proxyCountry || 'FR';
 
+  const failures: string[] = [];
+
   if (apiKey && apiKey.trim().length > 5) {
-    try {
-      const endpoint = new URL('https://api.scrapingant.com/v2/general');
-      endpoint.searchParams.set('url', targetUrl);
-      endpoint.searchParams.set('x-api-key', apiKey.trim());
-      endpoint.searchParams.set('browser', options.browser !== false ? 'true' : 'false');
-      endpoint.searchParams.set('proxy_country', proxyCountry);
+    // Try datacenter proxies first (cheaper), then residential proxies, which get past
+    // most anti-bot protections (Cloudflare, DataDome...) that block datacenter IPs.
+    const proxyTypes = options.proxyType ? [options.proxyType] : (['datacenter', 'residential'] as const);
+    for (const proxyType of proxyTypes) {
+      try {
+        const endpoint = new URL('https://api.scrapingant.com/v2/general');
+        endpoint.searchParams.set('url', targetUrl);
+        endpoint.searchParams.set('x-api-key', apiKey.trim());
+        endpoint.searchParams.set('browser', options.browser !== false ? 'true' : 'false');
+        endpoint.searchParams.set('proxy_country', proxyCountry);
+        endpoint.searchParams.set('proxy_type', proxyType);
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), options.timeoutMs || 30000);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), options.timeoutMs || 30000);
 
-      const response = await fetch(endpoint.toString(), {
-        headers: {
-          Accept: 'text/html,application/xhtml+xml,application/xml',
-          'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
-        },
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
+        const response = await fetch(endpoint.toString(), {
+          headers: {
+            Accept: 'text/html,application/xhtml+xml,application/xml',
+            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+          },
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
 
-      if (response.ok) {
-        const html = await response.text();
-        return {
-          html,
-          statusCode: response.status,
-          source: 'scrapingant',
-        };
-      } else {
-        console.warn(`ScrapingAnt API responded with status ${response.status}: ${await response.text().catch(() => '')}`);
+        if (response.ok) {
+          const html = await response.text();
+          return {
+            html,
+            statusCode: response.status,
+            source: 'scrapingant',
+          };
+        }
+        const body = (await response.text().catch(() => '')).slice(0, 200);
+        failures.push(`ScrapingAnt ${proxyType} ${response.status}${body ? `: ${body}` : ''}`);
+      } catch (err: any) {
+        failures.push(`ScrapingAnt ${proxyType}: ${err?.name === 'AbortError' ? 'timeout' : err?.message || err}`);
       }
-    } catch (err) {
-      console.warn('ScrapingAnt API call failed, attempting direct fetch fallback:', err);
     }
+  } else {
+    failures.push('ScrapingAnt: no API key');
   }
 
   // Fallback 1: Direct fetch with browser user agent headers
@@ -85,9 +95,12 @@ export async function fetchHtmlWithScrapingAnt(
         source: 'direct',
       };
     }
-  } catch (directErr) {
-    console.warn(`Direct fetch failed for ${targetUrl}:`, directErr);
+    failures.push(`Direct ${directRes.status}`);
+  } catch (directErr: any) {
+    failures.push(`Direct: ${directErr?.name === 'AbortError' ? 'timeout' : directErr?.message || directErr}`);
   }
 
-  throw new Error(`Failed to fetch HTML for ${targetUrl}: both ScrapingAnt and direct fetch failed.`);
+  const message = `Failed to fetch ${targetUrl} — ${failures.join(' | ')}`;
+  console.warn(message);
+  throw new Error(message);
 }

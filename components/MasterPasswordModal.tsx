@@ -47,13 +47,13 @@ export function MasterPasswordModal({ isOpen, onSuccess }: MasterPasswordModalPr
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dial-950/90 backdrop-blur-xl">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 pt-16 overflow-y-auto bg-dial-950/90 backdrop-blur-xl">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="relative w-full max-w-md rounded-2xl border border-gold-500/20 bg-dial-900/90 p-8 shadow-2xl shadow-gold-950/40 backdrop-blur-2xl"
+          className="relative w-full max-w-md rounded-2xl border border-gold-500/20 bg-dial-900/90 p-5 pt-10 sm:p-8 sm:pt-10 shadow-2xl shadow-gold-950/40 backdrop-blur-2xl"
         >
           {/* Subtle horology background crest */}
           <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex h-20 w-20 items-center justify-center rounded-full border border-gold-500/40 bg-dial-950 shadow-xl shadow-gold-500/10">
@@ -66,7 +66,7 @@ export function MasterPasswordModal({ isOpen, onSuccess }: MasterPasswordModalPr
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-gold-500/20 bg-gold-500/5 text-gold-300 text-xs tracking-wider uppercase font-mono font-medium mb-2">
               <Clock className="w-3 h-3" /> Timegraph Vault
             </div>
-            <h2 className="text-2xl font-serif tracking-wide text-slate-100">
+            <h2 className="text-xl sm:text-2xl font-serif tracking-wide text-slate-100">
               Master Authentication
             </h2>
             <p className="mt-2 text-sm text-slate-400">

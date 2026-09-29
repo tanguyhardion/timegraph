@@ -115,14 +115,14 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-2xl max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
+        className="relative w-full max-w-2xl max-h-[92dvh] sm:max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-t-3xl rounded-b-none sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
         <div className="fluted-bezel p-1 shrink-0">
-          <div className="bg-dial-900/95 px-6 py-4 flex items-center justify-between border-b border-white/10">
+          <div className="bg-dial-900/95 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-white/10">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-gold-500/20 border border-gold-400 flex items-center justify-center text-gold-300 shadow-gold">
                 <Compass className="w-4 h-4" />
@@ -136,7 +136,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
 
             <button
               onClick={onClose}
-              className="p-2 rounded-full bg-dial-800 text-steel-400 hover:text-white hover:bg-dial-700 transition-colors"
+              className="p-2.5 rounded-full bg-dial-800 text-steel-400 hover:text-white hover:bg-dial-700 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -144,7 +144,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
         </div>
 
         {/* Scrollable Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-6 flex-1">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6 flex-1">
           {/* URL Input & Auto-Scrape Trigger */}
           <div className="space-y-2">
             <label className="text-xs font-mono text-gold-400 block tracking-wider uppercase">
@@ -194,7 +194,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
 
           {/* Scraped Preview Card */}
           {scrapedData && (
-            <div className="p-4 rounded-2xl bg-dial-900/80 border border-gold-500/30 flex items-center gap-4 animate-in fade-in">
+            <div className="p-3 sm:p-4 rounded-2xl bg-dial-900/80 border border-gold-500/30 flex items-center gap-3 sm:gap-4 animate-in fade-in">
               <div className="w-20 h-20 rounded-full fluted-bezel p-1 shrink-0">
                 <div className="w-full h-full rounded-full overflow-hidden bg-dial-950">
                   <img
@@ -214,7 +214,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
                 <h4 className="font-display text-sm font-bold text-white truncate">
                   {scrapedData.title || `${brand} ${model}`}
                 </h4>
-                <div className="flex items-center gap-3 text-xs font-mono mt-1 text-steel-400">
+                <div className="flex flex-wrap items-center gap-x-3 text-xs font-mono mt-1 text-steel-400">
                   <span className="text-gold-300 font-bold">
                     {formatCurrency(scrapedData.price || price, currency)}
                   </span>
@@ -325,7 +325,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
           </div>
 
           {/* Footer CTAs */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10 [&>button]:flex-1 sm:[&>button]:flex-none [&>button]:justify-center">
             <button
               type="button"
               onClick={onClose}

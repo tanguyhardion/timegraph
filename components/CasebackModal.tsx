@@ -115,24 +115,24 @@ export function CasebackModal({
   const occasionStyle = getOccasionStyle(watch.occasion);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       {/* Modal Container: Styled as Sapphire Exhibition Caseback */}
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
+        className="relative w-full max-w-4xl max-h-[92dvh] sm:max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-t-3xl rounded-b-none sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Caseback Bezel Header */}
         <div className="fluted-bezel p-1 shrink-0">
-          <div className="bg-dial-900/95 px-6 py-4 flex items-center justify-between border-b border-white/10">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-dial-950 border border-gold-400/50 flex items-center justify-center text-gold-400">
+          <div className="bg-dial-900/95 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3 border-b border-white/10">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 shrink-0 rounded-full bg-dial-950 border border-gold-400/50 flex items-center justify-center text-gold-400">
                 <ShieldCheck className="w-4 h-4" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-[10px] font-mono tracking-widest text-gold-400 uppercase font-semibold">
                   EXHIBITION CASEBACK & ARCHIVE
                 </span>
-                <h2 className="font-display text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                <h2 className="font-display text-base sm:text-lg font-bold text-white tracking-wide flex flex-wrap items-center gap-x-2">
                   {watch.brand} {watch.model}
                   {watch.referenceNumber && (
                     <span className="text-xs font-mono text-steel-400 font-normal">
@@ -146,7 +146,7 @@ export function CasebackModal({
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="p-2 rounded-full bg-dial-800 text-steel-400 hover:text-white hover:bg-dial-700 transition-colors"
+              className="p-2.5 shrink-0 rounded-full bg-dial-800 text-steel-400 hover:text-white hover:bg-dial-700 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -154,8 +154,8 @@ export function CasebackModal({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center justify-between px-6 py-2 bg-dial-900 border-b border-white/10 shrink-0 text-xs font-mono">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 sm:px-6 py-2 bg-dial-900 border-b border-white/10 shrink-0 text-xs font-mono">
+          <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap pb-0.5">
             <button
               onClick={() => {
                 setActiveTab('specs');
@@ -203,7 +203,7 @@ export function CasebackModal({
           <div className="flex items-center gap-2">
             <button
               onClick={handleToggleAcquired}
-              className={`px-3 py-1 rounded-lg border text-xs font-mono flex items-center gap-1.5 transition-all ${
+              className={`px-3 py-2 sm:py-1 rounded-lg border text-xs font-mono flex items-center justify-center gap-1.5 transition-all w-full sm:w-auto ${
                 isAcquired
                   ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
                   : 'bg-dial-800 border-white/10 text-steel-300 hover:text-white'
@@ -216,15 +216,15 @@ export function CasebackModal({
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6 flex-1">
           {/* TAB 1: Movement & Specs Exhibition */}
           {activeTab === 'specs' && !isEditing && (
             <div className="space-y-6">
               {/* Primary Showcase Card */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center p-6 rounded-2xl bg-dial-900/60 border border-white/10 cotes-de-geneve">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-center p-4 sm:p-6 rounded-2xl bg-dial-900/60 border border-white/10 cotes-de-geneve">
                 {/* Watch Photo Dial Motif */}
                 <div className="flex flex-col items-center justify-center">
-                  <div className="w-48 h-48 rounded-full fluted-bezel p-2 shadow-2xl">
+                  <div className="w-36 h-36 sm:w-48 sm:h-48 rounded-full fluted-bezel p-2 shadow-2xl">
                     <div className="w-full h-full rounded-full overflow-hidden bg-dial-950 border border-white/20">
                       <img
                         src={watch.imageUrl}
@@ -255,11 +255,11 @@ export function CasebackModal({
                   </div>
 
                   {/* Price & Scrape Badge */}
-                  <div className="flex items-center gap-4 py-3 border-y border-white/10">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-3 py-3 border-y border-white/10">
                     <div>
                       <span className="text-[10px] font-mono text-steel-400 uppercase block">CURRENT MARKET PRICE</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-display text-2xl font-bold text-gold-300">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-display text-xl sm:text-2xl font-bold text-gold-300">
                           {formatCurrency(watch.currentPrice, watch.currency)}
                         </span>
                         {watch.originalPrice && watch.originalPrice > watch.currentPrice && (
@@ -355,8 +355,8 @@ export function CasebackModal({
           {/* TAB 2: Price History Log */}
           {activeTab === 'history' && (
             <div className="space-y-6">
-              <div className="p-6 rounded-2xl bg-dial-900/60 border border-white/10">
-                <div className="flex items-center justify-between mb-4">
+              <div className="p-4 sm:p-6 rounded-2xl bg-dial-900/60 border border-white/10">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
                   <div>
                     <h4 className="font-display text-lg font-bold text-white">Price Trajectory Curve</h4>
                     <p className="text-xs font-mono text-steel-400">
@@ -371,7 +371,7 @@ export function CasebackModal({
                   </div>
                 </div>
 
-                <div className="py-4">
+                <div className="py-4 overflow-x-auto">
                   <SparklineChart
                     history={watch.priceHistory || []}
                     currentPrice={watch.currentPrice}
@@ -391,8 +391,8 @@ export function CasebackModal({
                 <div className="divide-y divide-white/5 font-mono text-xs">
                   {watch.priceHistory && watch.priceHistory.length > 0 ? (
                     watch.priceHistory.map((entry, index) => (
-                      <div key={entry.id || index} className="p-3.5 flex items-center justify-between hover:bg-white/[0.02]">
-                        <div className="flex items-center gap-3">
+                      <div key={entry.id || index} className="p-3 sm:p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1 hover:bg-white/[0.02]">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                           <span className="text-steel-500">#{index + 1}</span>
                           <span className="text-white font-semibold">
                             {formatCurrency(entry.price, entry.currency)}
@@ -547,7 +547,7 @@ export function CasebackModal({
               </div>
 
               {/* Save & Delete Action Footer */}
-              <div className="flex items-center justify-between pt-4 border-t border-white/10">
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-white/10">
                 <button
                   onClick={() => {
                     if (confirm('Are you sure you want to remove this timepiece from your wishlist?')) {
@@ -555,13 +555,13 @@ export function CasebackModal({
                       onClose();
                     }
                   }}
-                  className="px-4 py-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-mono flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-mono flex items-center justify-center gap-1.5"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   Delete Watch
                 </button>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 [&>button]:flex-1 sm:[&>button]:flex-none [&>button]:justify-center">
                   <button
                     onClick={() => {
                       setIsEditing(false);

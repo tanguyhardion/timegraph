@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Watch } from '@/lib/types';
 import { formatCurrency, formatDate, getRelativeTime, getOccasionStyle, AVAILABILITY_CONFIG } from '@/lib/utils';
 import { SparklineChart } from './SparklineChart';
-import { ExternalLink, CheckCircle2, ShieldAlert, Sparkles, Compass, Eye } from 'lucide-react';
+import { ExternalLink, CheckCircle2, ShieldAlert, Sparkles, Eye } from 'lucide-react';
 
 interface WatchCardProps {
   watch: Watch;
@@ -142,40 +142,33 @@ export function WatchCard({ watch, onOpenDetail, onMarkAcquired }: WatchCardProp
               width={100}
               height={32}
             />
-            <span className="text-[9px] font-mono text-steel-500 mt-0.5">
-              Synced {getRelativeTime(watch.lastScrapedAt)}
-            </span>
           </div>
         )}
       </div>
 
-      {/* Bottom Actions Toolbar */}
-      <div className="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-steel-400">
-        <div>
-          {/* Retailer Listing Link */}
-          {watch.url && (
-            <a
-              href={watch.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              title={`Open ${watch.retailerName || 'listing'} product page`}
-              className="p-1.5 rounded-lg bg-dial-800/80 hover:bg-dial-700 hover:text-white border border-white/5 transition-all inline-flex items-center gap-1.5 text-xs font-mono"
-            >
-              <ExternalLink className="w-3 h-3" />
-              <span>Listing</span>
-            </a>
-          )}
-        </div>
-
-        {/* View Caseback / Inspect Action */}
-        <button
-          onClick={() => onOpenDetail(watch)}
-          className="flex items-center gap-1 text-[11px] font-mono text-gold-400/90 hover:text-gold-300 hover:underline px-2 py-1"
+      {/* Bottom Toolbar */}
+      <div className="mt-3 pt-2 border-t border-white/5 flex items-center justify-between gap-2 text-steel-400">
+        <span
+          title={watch.scrapeStatus === 'stale' ? watch.scrapeErrorMessage || 'Last sync attempt failed' : undefined}
+          className={`text-[10px] font-mono ${watch.scrapeStatus === 'stale' ? 'text-amber-400/80' : 'text-steel-500'}`}
         >
-          <Compass className="w-3.5 h-3.5" />
-          <span>Caseback</span>
-        </button>
+          {watch.scrapeStatus === 'stale' ? 'Sync failed · last ok ' : 'Synced '}
+          {getRelativeTime(watch.lastScrapedAt)}
+        </span>
+
+        {watch.url && (
+          <a
+            href={watch.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            title={`Open ${watch.retailerName || 'listing'} product page`}
+            className="p-1.5 rounded-lg bg-dial-800/80 hover:bg-dial-700 hover:text-white border border-white/5 transition-all inline-flex items-center gap-1.5 text-xs font-mono"
+          >
+            <ExternalLink className="w-3 h-3" />
+            <span>Listing</span>
+          </a>
+        )}
       </div>
     </div>
   );

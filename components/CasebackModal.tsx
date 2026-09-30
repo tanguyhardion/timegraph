@@ -74,14 +74,17 @@ export function CasebackModal({
     }
   }, [watch]);
 
-  // Lock body scroll while modal is open
+  // Lock body scroll and close on Escape while modal is open
   useEffect(() => {
     if (!isOpen) return;
     document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKey);
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   if (!isOpen || !watch) return null;
 
@@ -115,21 +118,21 @@ export function CasebackModal({
   const occasionStyle = getOccasionStyle(watch.occasion);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div onClick={onClose} className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       {/* Modal Container: Styled as Sapphire Exhibition Caseback */}
       <div
         className="relative w-full min-w-0 max-w-4xl max-h-[calc(100dvh-1rem)] sm:max-h-[90vh] bg-dial-950 border-2 border-gold-500/40 rounded-t-3xl rounded-b-none sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(207,159,45,0.15)] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Caseback Bezel Header */}
-        <div className="fluted-bezel p-1 shrink-0">
+        {/* Top Caseback Header */}
+        <div className="shrink-0">
           <div className="bg-dial-900/95 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3 border-b border-white/10">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 shrink-0 rounded-full bg-dial-950 border border-gold-400/50 flex items-center justify-center text-gold-400">
+              <div className="hidden sm:flex w-8 h-8 shrink-0 rounded-full bg-dial-950 border border-gold-400/50 items-center justify-center text-gold-400">
                 <ShieldCheck className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] font-mono tracking-widest text-gold-400 uppercase font-semibold">
+                <span className="hidden sm:block text-[10px] font-mono tracking-widest text-gold-400 uppercase font-semibold">
                   EXHIBITION CASEBACK & ARCHIVE
                 </span>
                 <h2 className="font-display text-base sm:text-lg font-bold text-white tracking-wide flex flex-wrap items-center gap-x-2">
@@ -167,7 +170,8 @@ export function CasebackModal({
                   : 'text-steel-400 hover:text-white'
               }`}
             >
-              Movement & Specs
+              <span className="sm:hidden">Specs</span>
+              <span className="hidden sm:inline">Movement & Specs</span>
             </button>
             <button
               onClick={() => {
@@ -181,7 +185,8 @@ export function CasebackModal({
               }`}
             >
               <TrendingDown className="w-3.5 h-3.5" />
-              Price History Log ({watch.priceHistory?.length || 0})
+              <span className="sm:hidden">History</span>
+              <span className="hidden sm:inline">Price History Log</span> ({watch.priceHistory?.length || 0})
             </button>
             <button
               onClick={() => {
@@ -221,17 +226,16 @@ export function CasebackModal({
           {activeTab === 'specs' && !isEditing && (
             <div className="space-y-6">
               {/* Primary Showcase Card */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-center p-4 sm:p-6 rounded-2xl bg-dial-900/60 border border-white/10 cotes-de-geneve">
-                {/* Watch Photo Dial Motif */}
-                <div className="flex flex-col items-center justify-center">
-                  <div className="w-48 h-48 rounded-full fluted-bezel p-2 shadow-2xl">
-                    <div className="w-full h-full rounded-full overflow-hidden bg-dial-950 border border-white/20">
-                      <img
-                        src={watch.imageUrl}
-                        alt={watch.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-center p-4 sm:p-6 rounded-2xl surface overflow-hidden relative">
+                {/* Watch Photo on a soft sunray glow */}
+                <div className="relative flex flex-col items-center justify-center">
+                  <div className="absolute w-64 h-64 rounded-full dial-glow pointer-events-none" />
+                  <div className="relative w-36 h-36 sm:w-48 sm:h-48 rounded-full overflow-hidden bg-dial-950 shadow-2xl ring-1 ring-white/5">
+                    <img
+                      src={watch.imageUrl}
+                      alt={watch.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
 

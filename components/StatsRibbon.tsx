@@ -30,42 +30,42 @@ export function StatsRibbon({ watches, isLoading = false }: StatsRibbonProps) {
   }, 0);
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 my-6">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 my-4 sm:my-6">
       {/* 1. Total Wishlist Valuation */}
-      <div className="p-4 rounded-2xl bg-dial-900/80 border border-gold-500/20 backdrop-blur-md shadow-dial">
+      <div className="p-3 sm:p-4 rounded-2xl surface">
         <div className="flex items-center justify-between text-steel-400 mb-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider">Wishlist Valuation</span>
+          <span className="text-[10px] font-mono uppercase tracking-wider truncate">Wishlist Valuation</span>
           <Landmark className="w-3.5 h-3.5 text-gold-400" />
         </div>
-        <div className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight">
+        <div className="font-display text-lg sm:text-2xl font-bold text-white tracking-tight tabular-nums">
           {isLoading ? <Placeholder /> : formatCurrency(totalWishlistValuation)}
         </div>
-        <span className="text-[10px] font-mono text-steel-500 mt-1 block">
+        <span className="hidden sm:block text-[10px] font-mono text-steel-500 mt-1">
           {isLoading ? 'Loading…' : `${wishlistItems.length} active timepieces tracked`}
         </span>
       </div>
 
       {/* 2. Acquired Collection Value */}
-      <div className="p-4 rounded-2xl bg-dial-900/80 border border-emerald-500/20 backdrop-blur-md shadow-dial">
+      <div className="p-3 sm:p-4 rounded-2xl surface">
         <div className="flex items-center justify-between text-steel-400 mb-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider">Acquired Collection</span>
+          <span className="text-[10px] font-mono uppercase tracking-wider truncate">Acquired Collection</span>
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
         </div>
-        <div className="font-display text-xl sm:text-2xl font-bold text-emerald-300 tracking-tight">
+        <div className="font-display text-lg sm:text-2xl font-bold text-emerald-300 tracking-tight tabular-nums">
           {isLoading ? <Placeholder /> : formatCurrency(totalAcquiredValuation)}
         </div>
-        <span className="text-[10px] font-mono text-steel-500 mt-1 block">
+        <span className="hidden sm:block text-[10px] font-mono text-steel-500 mt-1">
           {isLoading ? 'Loading…' : `${acquiredItems.length} permanent archive pieces`}
         </span>
       </div>
 
       {/* 3. Price Drops & Savings */}
-      <div className="p-4 rounded-2xl bg-dial-900/80 border border-rose-500/20 backdrop-blur-md shadow-dial">
+      <div className="p-3 sm:p-4 rounded-2xl surface">
         <div className="flex items-center justify-between text-steel-400 mb-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider">Active Price Drops</span>
+          <span className="text-[10px] font-mono uppercase tracking-wider truncate">Active Price Drops</span>
           <TrendingDown className="w-3.5 h-3.5 text-rose-400" />
         </div>
-        <div className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight flex items-baseline gap-2">
+        <div className="font-display text-lg sm:text-2xl font-bold text-white tracking-tight tabular-nums flex flex-wrap items-baseline gap-x-2">
           {isLoading ? <Placeholder className="w-24" /> : <span>{priceDropItems.length} Watches</span>}
           {!isLoading && totalDiscountSaved > 0 && (
             <span className="text-xs font-mono text-emerald-400 font-normal">
@@ -73,22 +73,22 @@ export function StatsRibbon({ watches, isLoading = false }: StatsRibbonProps) {
             </span>
           )}
         </div>
-        <span className="text-[10px] font-mono text-steel-500 mt-1 block">
+        <span className="hidden sm:block text-[10px] font-mono text-steel-500 mt-1">
           Scraped across live listings
         </span>
       </div>
 
       {/* 4. Movement Escapement Beat Status */}
-      <div className="p-4 rounded-2xl bg-dial-900/80 border border-white/10 backdrop-blur-md shadow-dial">
+      <div className="p-3 sm:p-4 rounded-2xl surface">
         <div className="flex items-center justify-between text-steel-400 mb-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider">Tracker Health</span>
+          <span className="text-[10px] font-mono uppercase tracking-wider truncate">Tracker Health</span>
           <Clock className="w-3.5 h-3.5 text-gold-400" />
         </div>
-        <div className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+        <div className="font-display text-lg sm:text-2xl font-bold text-white tracking-tight tabular-nums flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
           <span>Active</span>
         </div>
-        <span className="text-[10px] font-mono text-steel-500 mt-1 block">
+        <span className="hidden sm:block text-[10px] font-mono text-steel-500 mt-1">
           Synchronized on visit & daily
         </span>
       </div>

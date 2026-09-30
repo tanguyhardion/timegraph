@@ -43,7 +43,11 @@ async function handleCron(request: NextRequest) {
       if (!watch.url) continue;
 
       const lastScraped = watch.lastScrapedAt ? new Date(watch.lastScrapedAt).getTime() : 0;
-      const isFresh = now - lastScraped < ttlMs;
+      // A failed attempt bumps updatedAt (via scrapeStatus: 'stale'); back off on it too, so a
+      // blocked site isn't retried on every page visit, burning proxy credits and concurrency.
+      const lastFailedAttempt =
+        watch.scrapeStatus === 'stale' && watch.updatedAt ? new Date(watch.updatedAt).getTime() : 0;
+      const isFresh = now - Math.max(lastScraped, lastFailedAttempt) < ttlMs;
 
       if (!force && isFresh) {
         results.push({

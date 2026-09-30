@@ -121,7 +121,7 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
-        <div className="fluted-bezel p-1 shrink-0">
+        <div className="shrink-0">
           <div className="bg-dial-900/95 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-white/10">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-gold-500/20 border border-gold-400 flex items-center justify-center text-gold-300 shadow-gold">
@@ -195,14 +195,12 @@ export function AddWatchModal({ isOpen, onClose, onAddWatch }: AddWatchModalProp
           {/* Scraped Preview Card */}
           {scrapedData && (
             <div className="p-3 sm:p-4 rounded-2xl bg-dial-900/80 border border-gold-500/30 flex items-center gap-3 sm:gap-4 animate-in fade-in">
-              <div className="w-20 h-20 rounded-full fluted-bezel p-1 shrink-0">
-                <div className="w-full h-full rounded-full overflow-hidden bg-dial-950">
-                  <img
-                    src={scrapedData.imageUrl || imageUrl}
-                    alt="Scraped Watch"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-dial-950 shrink-0">
+                <img
+                  src={scrapedData.imageUrl || imageUrl}
+                  alt="Scraped Watch"
+                  className="w-full h-full object-cover"
+                />
               </div>
 
               <div className="flex-1 min-w-0">

@@ -10,16 +10,15 @@ import { WatchCard } from '@/components/WatchCard';
 import { CasebackModal } from '@/components/CasebackModal';
 import { AddWatchModal } from '@/components/AddWatchModal';
 import { MasterPasswordModal } from '@/components/MasterPasswordModal';
+import { WatchLogo } from '@/components/WatchLogo';
 import {
   Plus,
-  Compass,
   Sparkles,
   Watch as WatchIcon,
   ShieldAlert,
   Archive,
   Layers,
   Lock,
-  LogOut,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -224,60 +223,59 @@ export default function HomePage() {
 
       {/* Primary Container (hidden until the vault is unlocked) */}
       {isAuthenticated && (
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         {/* Navigation Bar */}
-        <header className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-white/10">
+        <header className="flex items-center justify-between gap-3 pb-4 sm:pb-5">
           {/* Logo & Horology Subtitle */}
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl fluted-bezel p-[2px] shadow-gold">
-              <div className="w-full h-full rounded-2xl bg-dial-950 flex items-center justify-center border border-gold-500/30">
-                <Compass className="w-6 h-6 text-gold-400" />
-              </div>
-            </div>
-            <div>
+          <div className="flex items-center gap-3 min-w-0">
+            <WatchLogo className="w-10 h-10 sm:w-11 sm:h-11 shrink-0 drop-shadow-[0_0_12px_rgba(207,159,45,0.35)]" />
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h1 className="font-display text-2xl font-black tracking-widest text-white">
+                <h1 className="font-display text-xl sm:text-2xl font-black tracking-widest text-white">
                   TIMEGRAPH
                 </h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/40 font-semibold tracking-wider">
+                <span className="hidden sm:inline text-[10px] font-mono px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/40 font-semibold tracking-wider">
                   CAL. 2026
                 </span>
               </div>
-              <p className="text-[11px] font-mono text-steel-400">
+              <p className="hidden md:block text-[11px] font-mono text-steel-400">
                 Precision Watchmaking Wishlist & Autonomous Retailer Tracker
               </p>
             </div>
           </div>
 
           {/* Right Header: Live Clock & Crown Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Live Working Analog Mechanical Clock */}
-            <HeaderClock />
-
-            {/* Lock Vault Button */}
-            {isAuthenticated && (
-              <button
-                onClick={handleLockVault}
-                title="Lock Vault"
-                className="px-3.5 py-2.5 rounded-full border border-white/10 bg-dial-900/80 hover:bg-rose-500/10 hover:border-rose-500/30 text-steel-400 hover:text-rose-300 font-mono text-xs flex items-center gap-2 transition-all duration-200 cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Lock Vault</span>
-              </button>
-            )}
+            <div className="hidden lg:block">
+              <HeaderClock />
+            </div>
 
             {/* Add Watch Button (Crown-Winding CTA) */}
             <button
               onClick={() => {
                 setIsAddOpen(true);
               }}
-              className="px-5 py-2.5 rounded-full bg-gold-500 hover:bg-gold-400 text-black font-semibold font-mono text-xs flex items-center gap-2 shadow-gold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+              className="px-4 sm:px-5 py-2.5 rounded-full bg-gold-500 hover:bg-gold-400 text-black font-semibold font-mono text-xs flex items-center gap-2 shadow-gold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Watch by Link</span>
+              <span>Add Watch</span>
             </button>
+
+            {/* Lock Vault Button */}
+            {isAuthenticated && (
+              <button
+                onClick={handleLockVault}
+                title="Lock Vault"
+                aria-label="Lock Vault"
+                className="w-10 h-10 rounded-full border border-white/10 bg-dial-900/80 hover:bg-rose-500/10 hover:border-rose-500/30 text-steel-400 hover:text-rose-300 flex items-center justify-center transition-all duration-200 cursor-pointer"
+              >
+                <Lock className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </header>
+        <div className="minute-track" aria-hidden="true" />
 
         {/* Portfolio Stats Ribbon */}
         <StatsRibbon watches={watches} isLoading={isLoading && watches.length === 0} />
@@ -296,9 +294,9 @@ export default function HomePage() {
 
         {/* Watch Dial Grid */}
         {isLoading && watches.length === 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-busy="true">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" aria-busy="true">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="rounded-3xl bg-dial-900/60 border border-white/10 p-4 animate-pulse">
+              <div key={i} className="rounded-2xl surface p-4 animate-pulse">
                 <div className="aspect-square rounded-2xl bg-white/5 mb-4" />
                 <div className="h-3 w-1/3 rounded bg-white/10 mb-2" />
                 <div className="h-4 w-2/3 rounded bg-white/10 mb-4" />
@@ -307,7 +305,7 @@ export default function HomePage() {
             ))}
           </div>
         ) : displayedWatches.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {displayedWatches.map((watch) => (
               <WatchCard
                 key={watch.id}
@@ -325,7 +323,7 @@ export default function HomePage() {
             ))}
           </div>
         ) : (
-          <div className="py-20 text-center rounded-3xl bg-dial-900/40 border border-white/10 p-8">
+          <div className="py-20 text-center rounded-3xl surface p-8">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-dial-800 flex items-center justify-center text-steel-400">
               {currentTab === 'acquired' ? <Archive className="w-8 h-8" /> : <WatchIcon className="w-8 h-8" />}
             </div>

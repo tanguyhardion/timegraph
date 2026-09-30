@@ -81,8 +81,8 @@ export function SparklineChart({
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="relative group" style={{ width, height }}>
-        <svg width={width} height={height} className="overflow-visible">
+      <div className="relative group max-w-full" style={{ width, aspectRatio: `${width} / ${height}` }}>
+        <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" className="w-full h-full overflow-visible">
           <defs>
             <linearGradient id={`sparkline-grad-${width}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={strokeColor} stopOpacity="0.3" />

@@ -27,14 +27,14 @@ export function FilterBar({
   acquiredCount,
 }: FilterBarProps) {
   return (
-    <div className="space-y-4 mb-6">
+    <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
       {/* Top Bar: Tabs (Wishlist vs Acquired) + Search & Sort */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
         {/* Collection / Wishlist Toggle */}
         <div className="flex items-center p-1 rounded-xl bg-dial-900 border border-white/10 shrink-0">
           <button
             onClick={() => onTabChange('wishlist')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono transition-all ${
+            className={`flex-1 md:flex-none justify-center flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono transition-all ${
               currentTab === 'wishlist'
                 ? 'bg-gold-500 text-black font-bold shadow-gold'
                 : 'text-steel-400 hover:text-white'
@@ -46,28 +46,30 @@ export function FilterBar({
 
           <button
             onClick={() => onTabChange('acquired')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono transition-all ${
+            className={`flex-1 md:flex-none justify-center flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono transition-all ${
               currentTab === 'acquired'
                 ? 'bg-emerald-500 text-black font-bold shadow-lg shadow-emerald-500/20'
                 : 'text-steel-400 hover:text-white'
             }`}
           >
             <Archive className="w-3.5 h-3.5" />
-            <span>Acquired Archive ({acquiredCount})</span>
+            <span>
+              Acquired<span className="hidden sm:inline"> Archive</span> ({acquiredCount})
+            </span>
           </button>
         </div>
 
         {/* Search Input & Sort Dropdowns */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-2">
           {/* Search */}
-          <div className="relative flex-1 sm:w-64">
+          <div className="relative col-span-3 sm:flex-1 sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-steel-500" />
             <input
               type="text"
               placeholder="Search reference, brand, caliber..."
               value={filters.searchQuery || ''}
               onChange={(e) => onFiltersChange({ ...filters, searchQuery: e.target.value })}
-              className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-dial-900 border border-white/10 text-white placeholder:text-steel-600 focus:border-gold-400 focus:outline-none text-xs font-mono"
+              className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-dial-900 border border-white/10 text-white placeholder:text-steel-600 focus:border-gold-400 focus:outline-none text-base sm:text-xs font-mono"
             />
           </div>
 
@@ -75,7 +77,7 @@ export function FilterBar({
           <select
             value={filters.brand || 'All'}
             onChange={(e) => onFiltersChange({ ...filters, brand: e.target.value })}
-            className="px-3 py-1.5 rounded-xl bg-dial-900 border border-white/10 text-white focus:border-gold-400 focus:outline-none text-xs font-mono"
+            className="w-full sm:w-auto min-w-0 px-2 sm:px-3 py-1.5 rounded-xl bg-dial-900 border border-white/10 text-white focus:border-gold-400 focus:outline-none text-xs font-mono"
           >
             <option value="All">All Brands</option>
             {availableBrands.map((brand) => (
@@ -91,7 +93,7 @@ export function FilterBar({
             onChange={(e) =>
               onFiltersChange({ ...filters, availability: e.target.value as WatchAvailability | 'All' })
             }
-            className="px-3 py-1.5 rounded-xl bg-dial-900 border border-white/10 text-white focus:border-gold-400 focus:outline-none text-xs font-mono"
+            className="w-full sm:w-auto min-w-0 px-2 sm:px-3 py-1.5 rounded-xl bg-dial-900 border border-white/10 text-white focus:border-gold-400 focus:outline-none text-xs font-mono"
           >
             <option value="All">All Stock</option>
             <option value="in_stock">In Stock</option>
@@ -106,7 +108,7 @@ export function FilterBar({
             onChange={(e) =>
               onFiltersChange({ ...filters, sortBy: e.target.value as FilterOptions['sortBy'] })
             }
-            className="px-3 py-1.5 rounded-xl bg-dial-900 border border-white/10 text-white focus:border-gold-400 focus:outline-none text-xs font-mono"
+            className="w-full sm:w-auto min-w-0 px-2 sm:px-3 py-1.5 rounded-xl bg-dial-900 border border-white/10 text-white focus:border-gold-400 focus:outline-none text-xs font-mono"
           >
             <option value="order">Manual Order</option>
             <option value="price-desc">Price: High to Low</option>
